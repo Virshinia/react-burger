@@ -1,0 +1,16 @@
+.ingredient {
+    display: flex;
+    flex-flow: column;
+    position: relative;
+    text-align: center;
+    gap: 8px;
+    max-width: 272px;
+}
+.ingredientImage {
+    margin: 0 16px;
+}
+.price {
+    display: flex;
+    gap: 9px;
+    justify-content: center;
+}
