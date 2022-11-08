@@ -1,5 +1,7 @@
 import PropTypes from "prop-types";
 
+export const urlForGettingIngredients = 'https://norma.nomoreparties.space/api/ingredients'
+
 export const INGREDIENT_TYPES = {
     bun: "bun",
     sauce: "sauce",

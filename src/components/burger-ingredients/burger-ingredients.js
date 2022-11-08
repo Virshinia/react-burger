@@ -8,6 +8,20 @@ import {INGREDIENT_TYPES, ingredientPropTypes} from '../../utils/constatants';
 
 const BurgerIngredients = ({ingredients}) => {
     const [current, setCurrent] = React.useState(INGREDIENT_TYPES.bun);
+    const renderCategory = (array, categoryName) => {
+        return array.map(item => (
+            item.type === categoryName &&
+            <BurgerIngredient
+                key={item._id}
+                img={item.image_large}
+                name={item.name}
+                price={item.price}
+                calories={item.calories}
+                fat={item.fat}
+                proteins={item.proteins}
+                carbohydrates={item.carbohydrates}/>
+        ))
+    }
     return (
         <section className="mt-10">
             <h2 className="text text_type_main-large mb-5">Соберите бургер</h2>
@@ -25,36 +39,15 @@ const BurgerIngredients = ({ingredients}) => {
             <article className={burgerIngredientsStyle.ingredients}>
                 <h3 className="text text_type_main-medium">Булки</h3>
                 <ul className={burgerIngredientsStyle.category}>
-                    {ingredients.map(item => (
-                        item.type === INGREDIENT_TYPES.bun &&
-                        <BurgerIngredient
-                            key={item._id}
-                            img={item.image_large}
-                            name={item.name}
-                            price={item.price}/>
-                    ))}
+                    {renderCategory(ingredients, INGREDIENT_TYPES.bun)}
                 </ul>
                 <h3 className="text text_type_main-medium">Соусы</h3>
                 <ul className={burgerIngredientsStyle.category}>
-                    {ingredients.map(item => (
-                        item.type === INGREDIENT_TYPES.sauce &&
-                        <BurgerIngredient
-                            key={item._id}
-                            img={item.image_large}
-                            name={item.name}
-                            price={item.price}/>
-                    ))}
+                    {renderCategory(ingredients, INGREDIENT_TYPES.sauce)}
                 </ul>
                 <h3 className="text text_type_main-medium">Начинки</h3>
                 <ul className={burgerIngredientsStyle.category}>
-                    {ingredients.map(item => (
-                        item.type === INGREDIENT_TYPES.main &&
-                        <BurgerIngredient
-                            key={item._id}
-                            img={item.image_large}
-                            name={item.name}
-                            price={item.price}/>
-                    ))}
+                    {renderCategory(ingredients, INGREDIENT_TYPES.main)}
                 </ul>
             </article>
         </section>)

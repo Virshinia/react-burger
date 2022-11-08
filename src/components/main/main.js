@@ -8,10 +8,10 @@ import {ingredientPropTypes} from "../../utils/constatants";
 
 const Main = ({data}) => {
     return (
-        <div className={mainStyles.main}>
+        <main className={mainStyles.main}>
             <BurgerIngredients ingredients={data}/>
             <BurgerConstructor/>
-        </div>
+        </main>
     );
 }
 
