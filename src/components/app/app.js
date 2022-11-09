@@ -1,20 +1,17 @@
 import React from 'react';
 import Header from '../header/header'
 import Main from "../main/main";
-import {urlForGettingIngredients} from "../../utils/constatants";
+import getIngredients from "../../utils/api";
+import {urlForGettingIngredients} from "../../utils/constatants"
 
 const App = () => {
 
     const [ingredients, setIngredients] = React.useState([])
 
     React.useEffect(() => {
-        const getIngredients = async () => {
-            const res = await fetch(urlForGettingIngredients);
-            return await res.json();
-        }
-        getIngredients()
+        getIngredients(urlForGettingIngredients)
             .then(ingredientsFromApi => {
-            setIngredients(ingredientsFromApi.data)
+                setIngredients(ingredientsFromApi.data)
             })
             .catch((err) => {
                 console.log(err);

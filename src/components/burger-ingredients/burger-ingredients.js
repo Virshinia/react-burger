@@ -8,7 +8,8 @@ import {INGREDIENT_TYPES, ingredientPropTypes} from '../../utils/constatants';
 
 const BurgerIngredients = ({ingredients}) => {
     const [current, setCurrent] = React.useState(INGREDIENT_TYPES.bun);
-    const renderCategory = (array, categoryName) => {
+
+    const createCategory = (array, categoryName) => {
         return array.map(item => (
             item.type === categoryName &&
             <BurgerIngredient
@@ -22,32 +23,46 @@ const BurgerIngredients = ({ingredients}) => {
                 carbohydrates={item.carbohydrates}/>
         ))
     }
+
+    const renderCategory = React.useMemo(() => {
+        const buns = createCategory(ingredients, INGREDIENT_TYPES.bun);
+        const sauces = createCategory(ingredients,INGREDIENT_TYPES.sauce);
+        const mains = createCategory(ingredients,INGREDIENT_TYPES.main);
+        return [buns, sauces, mains]
+    },[ingredients])
+
+
+    const tabClick = (tab) => {
+        setCurrent(tab);
+        document.querySelector(`#${tab}`).scrollIntoView({ behavior: "smooth" });
+    };
+
     return (
         <section className="mt-10">
             <h2 className="text text_type_main-large mb-5">Соберите бургер</h2>
             <div style={{ display: 'flex' }}>
-                <Tab value={INGREDIENT_TYPES.bun} active={current === `${INGREDIENT_TYPES.bun}`} onClick={setCurrent}>
+                <Tab value={INGREDIENT_TYPES.bun} active={current === `${INGREDIENT_TYPES.bun}`} onClick={tabClick}>
                     Булки
                 </Tab>
-                <Tab value={INGREDIENT_TYPES.sauce} active={current === `${INGREDIENT_TYPES.sauce}`} onClick={setCurrent}>
+                <Tab value={INGREDIENT_TYPES.sauce} active={current === `${INGREDIENT_TYPES.sauce}`} onClick={tabClick}>
                     Соусы
                 </Tab>
-                <Tab value={INGREDIENT_TYPES.main} active={current === `${INGREDIENT_TYPES.main}`} onClick={setCurrent}>
+                <Tab value={INGREDIENT_TYPES.main} active={current === `${INGREDIENT_TYPES.main}`} onClick={tabClick}>
                     Начинки
                 </Tab>
             </div>
             <article className={burgerIngredientsStyle.ingredients}>
-                <h3 className="text text_type_main-medium">Булки</h3>
+                <h3 id={INGREDIENT_TYPES.bun} className="text text_type_main-medium">Булки</h3>
                 <ul className={burgerIngredientsStyle.category}>
-                    {renderCategory(ingredients, INGREDIENT_TYPES.bun)}
+                    {renderCategory[0]}
                 </ul>
-                <h3 className="text text_type_main-medium">Соусы</h3>
+                <h3 id={INGREDIENT_TYPES.sauce} className="text text_type_main-medium">Соусы</h3>
                 <ul className={burgerIngredientsStyle.category}>
-                    {renderCategory(ingredients, INGREDIENT_TYPES.sauce)}
+                    {renderCategory[1]}
                 </ul>
-                <h3 className="text text_type_main-medium">Начинки</h3>
+                <h3 id={INGREDIENT_TYPES.main} className="text text_type_main-medium">Начинки</h3>
                 <ul className={burgerIngredientsStyle.category}>
-                    {renderCategory(ingredients, INGREDIENT_TYPES.main)}
+                    {renderCategory[2]}
                 </ul>
             </article>
         </section>)
