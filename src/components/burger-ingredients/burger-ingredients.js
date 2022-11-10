@@ -28,7 +28,7 @@ const BurgerIngredients = ({ingredients}) => {
         const buns = createCategory(ingredients, INGREDIENT_TYPES.bun);
         const sauces = createCategory(ingredients,INGREDIENT_TYPES.sauce);
         const mains = createCategory(ingredients,INGREDIENT_TYPES.main);
-        return [buns, sauces, mains]
+        return {buns, sauces, mains}
     },[ingredients])
 
 
@@ -54,15 +54,15 @@ const BurgerIngredients = ({ingredients}) => {
             <article className={burgerIngredientsStyle.ingredients}>
                 <h3 id={INGREDIENT_TYPES.bun} className="text text_type_main-medium">Булки</h3>
                 <ul className={burgerIngredientsStyle.category}>
-                    {renderCategory[0]}
+                    {renderCategory.buns}
                 </ul>
                 <h3 id={INGREDIENT_TYPES.sauce} className="text text_type_main-medium">Соусы</h3>
                 <ul className={burgerIngredientsStyle.category}>
-                    {renderCategory[1]}
+                    {renderCategory.sauces}
                 </ul>
                 <h3 id={INGREDIENT_TYPES.main} className="text text_type_main-medium">Начинки</h3>
                 <ul className={burgerIngredientsStyle.category}>
-                    {renderCategory[2]}
+                    {renderCategory.mains}
                 </ul>
             </article>
         </section>)
