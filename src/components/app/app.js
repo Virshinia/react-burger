@@ -1,28 +1,29 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Header from '../header/header'
 import Main from "../main/main";
-import getIngredients from "../../utils/api";
+import {getIngredients} from "../../utils/api";
 import {urlForGettingIngredients} from "../../utils/constatants"
+import {IngredientsContext} from "../../services/appContext";
 
 const App = () => {
+    const [ingredients, setIngredients] = React.useState([]);
 
-    const [ingredients, setIngredients] = React.useState([])
-
-    React.useEffect(() => {
+    useEffect(() => {
         getIngredients(urlForGettingIngredients)
             .then(ingredientsFromApi => {
-                setIngredients(ingredientsFromApi.data)
+                setIngredients(ingredientsFromApi.data);
             })
             .catch((err) => {
                 console.log(err);
             });
     }, [])
 
-
     return (
         <>
-            <Header/>
-            <Main data={ingredients}/>
+            <Header />
+            <IngredientsContext.Provider value={ingredients}>
+                <Main />
+            </IngredientsContext.Provider>
         </>
     );
 }

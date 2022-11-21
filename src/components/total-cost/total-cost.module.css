@@ -1,0 +1,11 @@
+.info {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    justify-content: flex-end;
+}
+.total {
+    display: flex;
+    gap: 9px;
+    align-items: center;
+}

@@ -1,13 +1,14 @@
-import React from 'react';
+import React, {useContext, useState, useMemo} from 'react';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components'
 import burgerIngredientsStyle from "./burger-ingredients.module.css";
 import BurgerIngredient from "../burger-ingredient/burger-ingredient";
-import PropTypes from "prop-types";
-import {INGREDIENT_TYPES, ingredientPropTypes} from '../../utils/constatants';
+import {INGREDIENT_TYPES} from '../../utils/constatants';
+import {IngredientsContext} from "../../services/appContext";
 
 
-const BurgerIngredients = ({ingredients}) => {
-    const [current, setCurrent] = React.useState(INGREDIENT_TYPES.bun);
+const BurgerIngredients = () => {
+    const [current, setCurrent] = useState(INGREDIENT_TYPES.bun);
+    const ingredients = useContext(IngredientsContext);
 
     const createCategory = (array, categoryName) => {
         return array.map(item => (
@@ -24,10 +25,10 @@ const BurgerIngredients = ({ingredients}) => {
         ))
     }
 
-    const renderCategory = React.useMemo(() => {
+    const renderCategory = useMemo(() => {
         const buns = createCategory(ingredients, INGREDIENT_TYPES.bun);
-        const sauces = createCategory(ingredients,INGREDIENT_TYPES.sauce);
-        const mains = createCategory(ingredients,INGREDIENT_TYPES.main);
+        const sauces = createCategory(ingredients, INGREDIENT_TYPES.sauce);
+        const mains = createCategory(ingredients, INGREDIENT_TYPES.main);
         return {buns, sauces, mains}
     },[ingredients])
 
@@ -68,8 +69,6 @@ const BurgerIngredients = ({ingredients}) => {
         </section>)
 };
 
-BurgerIngredients.propTypes = {
-    ingredients: PropTypes.arrayOf(PropTypes.shape(ingredientPropTypes)).isRequired,
-};
+
 
 export default BurgerIngredients
