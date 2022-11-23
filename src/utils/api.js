@@ -1,14 +1,26 @@
 const _checkRes = (res) => {
-    return res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`);
-    };
+  return res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`);
+};
 
-const request = (baseUrl) => {
-    return fetch(baseUrl).then(res => _checkRes(res));
-    };
+const request = (baseUrl, options) => {
+  return fetch(baseUrl, options).then(res => _checkRes(res));
+};
 
 const getIngredients = (baseUrl) => {
-    return request(baseUrl);
+  return request(baseUrl);
 }
 
-export default getIngredients
+const postOrder = (baseUrl, orderedIngredients) => {
+  return request(baseUrl, {
+    method: "POST",
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      "ingredients": orderedIngredients
+    })
+  });
+}
 
+export {getIngredients, postOrder}
