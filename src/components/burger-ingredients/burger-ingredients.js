@@ -5,7 +5,7 @@ import BurgerIngredient from "../burger-ingredient/burger-ingredient";
 import {BUN, SAUCE, MAIN} from '../../utils/constatants';
 import Modal from "../modal/modal";
 import IngredientDetails from "../ingredient-details/ingredient-details";
-import {RESET_INGREDIENT_DETAILS, SHOW_INGREDIENT_DETAILS} from "../../services/actions";
+import {RESET_INGREDIENT_DETAILS, SHOW_INGREDIENT_DETAILS} from "../../services/actions/burger-ingredients";
 import TabSection from "../tab-section/tab-section";
 import {SET_CURRENT} from "../../services/actions/tab-section";
 
@@ -13,7 +13,7 @@ import {SET_CURRENT} from "../../services/actions/tab-section";
 const BurgerIngredients = () => {
   const dispatch = useDispatch();
   const [modalIsVisible, setVisibility] = useState(false);
-  const {ingredients, ingredientDetails} = useSelector(store => store.burger);
+  const {ingredients, ingredientDetails} = useSelector(store => store.ingredients);
 
   const changeVisibilityIngredientDetails = () => {
     setVisibility(!modalIsVisible);

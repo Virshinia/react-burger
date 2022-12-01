@@ -6,7 +6,7 @@ import Modal from "../modal/modal";
 import OrderDetails from "../order-details/order-details";
 import totalCostStyle from "./total-cost.module.css";
 import { ingredientPropTypes } from "../../utils/constatants";
-import {GET_INGREDIENTS_FOR_ORDER, setOrderId } from "../../services/actions";
+import {GET_INGREDIENTS_FOR_ORDER, setOrderId } from "../../services/actions/burger-constructor";
 
 
 const TotalCost = ({others, bun}) => {
@@ -25,7 +25,7 @@ const TotalCost = ({others, bun}) => {
     dispatch((GET_INGREDIENTS_FOR_ORDER([bun._id, ...others.map((item) => item._id)])))
   }, [others, bun])
 
-  const {ingredientsForOrder, orderId} = useSelector(store => store.burger)
+  const {ingredientsForOrder, orderId} = useSelector(store => store.burgerConstructor)
 
   const handleSetOrder = () => {
     setOrder(!orderStatus);

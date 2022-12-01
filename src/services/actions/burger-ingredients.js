@@ -1,0 +1,11 @@
+import { createAction } from 'redux-actions'
+
+const GET_INGREDIENTS = createAction('GET_INGREDIENTS');
+const SHOW_INGREDIENT_DETAILS = createAction('SHOW_INGREDIENT_DETAILS');
+const RESET_INGREDIENT_DETAILS = createAction('RESET_INGREDIENT_DETAILS');
+
+export {
+  GET_INGREDIENTS,
+  SHOW_INGREDIENT_DETAILS,
+  RESET_INGREDIENT_DETAILS
+}

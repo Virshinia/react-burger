@@ -6,13 +6,15 @@ import './index.css';
 import App from './components/app/app';
 
 import { Provider } from 'react-redux';
-import burgerReducer from "./services/reducers/index";
+import ingredientsReducer from "./services/reducers/burger-ingredients";
 import tabReducer from "./services/reducers/tab-section";
+import constructorReducer from "./services/reducers/burger-constructor";
 
 
 const store = configureStore({
   reducer: {
-    burger: burgerReducer,
+    ingredients: ingredientsReducer,
+    burgerConstructor: constructorReducer,
     tab: tabReducer
   }
 });

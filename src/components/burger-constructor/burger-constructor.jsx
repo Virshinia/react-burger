@@ -4,11 +4,11 @@ import burgerConstructorStyle from "./burger-constructor.module.css";
 import {isBun} from "../../utils/constatants";
 import TotalCost from "../total-cost/total-cost";
 import ConstructorItem from "../constructor-item/constructor-item";
-import {DELETE_INGREDIENT} from "../../services/actions";
+import {DELETE_INGREDIENT} from "../../services/actions/burger-constructor";
 
 const BurgerConstructor = () => {
   const dispatch = useDispatch();
-  const ingredientsInConstructor = useSelector(store => store.burger.ingredientsInConstructor);
+  const ingredientsInConstructor = useSelector(store => store.burgerConstructor.ingredientsInConstructor);
 
   const categoryOfIngredients = useMemo(() => {
     const bun = ingredientsInConstructor.filter((item) => isBun(item))[0];
