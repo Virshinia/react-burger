@@ -1,17 +1,26 @@
-import React, {useContext, useMemo} from 'react';
+import React, {useMemo} from 'react';
+import {useDispatch, useSelector} from "react-redux";
 import burgerConstructorStyle from "./burger-constructor.module.css";
 import {isBun} from "../../utils/constatants";
-import {IngredientsContext} from "../../services/appContext";
 import TotalCost from "../total-cost/total-cost";
 import ConstructorItem from "../constructor-item/constructor-item";
+import {DELETE_INGREDIENT} from "../../services/actions";
 
 const BurgerConstructor = () => {
-  const ingredients = useContext(IngredientsContext);
+  const dispatch = useDispatch();
+  const ingredientsInConstructor = useSelector(store => store.burger.ingredientsInConstructor);
+
   const categoryOfIngredients = useMemo(() => {
-    const bun = ingredients.filter((item) => isBun(item))[0];
-    const others = ingredients.filter((item) => !isBun(item));
+    const bun = ingredientsInConstructor.filter((item) => isBun(item))[0];
+    const others = ingredientsInConstructor.filter((item) => !isBun(item));
     return {bun, others}
-  },[ingredients])
+  },[ingredientsInConstructor])
+
+
+  const deleteItem = (id) => {
+    dispatch(DELETE_INGREDIENT(id))
+    console.log(test)
+  }
 
 
   const renderFewIngredientsForOrder = (array) => {
@@ -20,6 +29,7 @@ const BurgerConstructor = () => {
         key={item._id}
         item={item}
         style={burgerConstructorStyle.defaultItem}
+        deleteItem={deleteItem}
       />
     ))
   }

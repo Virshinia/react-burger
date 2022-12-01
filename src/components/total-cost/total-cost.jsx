@@ -1,13 +1,16 @@
 import React, {useState, useEffect} from 'react';
+import {useDispatch, useSelector} from "react-redux";
 import PropTypes from "prop-types";
 import { CurrencyIcon, Button} from '@ya.praktikum/react-developer-burger-ui-components'
 import Modal from "../modal/modal";
 import OrderDetails from "../order-details/order-details";
 import totalCostStyle from "./total-cost.module.css";
-import { ingredientPropTypes, BASE_URL } from "../../utils/constatants";
-import { postOrder } from "../../utils/api";
+import { ingredientPropTypes } from "../../utils/constatants";
+import {GET_INGREDIENTS_FOR_ORDER, setOrderId } from "../../services/actions";
+
 
 const TotalCost = ({others, bun}) => {
+  const dispatch = useDispatch();
 
   const sumOfPrice = () => {
     return others.reduce((total, item) => total + item.price, 0) + bun.price*2;
@@ -15,28 +18,22 @@ const TotalCost = ({others, bun}) => {
 
   const orderStatusText = "Ваш заказ начали готовить";
   const [orderStatus, setOrder] = useState(false);
-  const [orderId, setOrderId] = useState(null);
   const [totalPrice, setTotalPrice] = useState(0);
-  const [ingredientsIdsForOrder, setIngredientsIds] = useState([]);
 
   useEffect(() => {
     setTotalPrice(sumOfPrice)
-    setIngredientsIds([bun._id, ...others.map((item) => item._id)])
+    dispatch((GET_INGREDIENTS_FOR_ORDER([bun._id, ...others.map((item) => item._id)])))
   }, [others, bun])
+
+  const {ingredientsForOrder, orderId} = useSelector(store => store.burger)
 
   const handleSetOrder = () => {
     setOrder(!orderStatus);
   }
 
   const handlePostOrder = () => {
-    postOrder(`${BASE_URL}/orders`, ingredientsIdsForOrder)
-      .then (data => {
-        setOrderId(data.order.number)
-          handleSetOrder()
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    dispatch(setOrderId(ingredientsForOrder));
+    handleSetOrder();
   }
 
   const modalForOrderDetails = <Modal closeModal={handleSetOrder}>

@@ -3,7 +3,7 @@ import { ConstructorElement, DragIcon } from '@ya.praktikum/react-developer-burg
 import { ingredientPropTypes, isBun } from "../../utils/constatants";
 import PropTypes from "prop-types";
 
-const ConstructorItem = ({item, style, type}) => {
+const ConstructorItem = ({item, style, type, deleteItem}) => {
   let name = item.name;
   if (type === 'top') {
     name = `${name} (верх)`
@@ -15,6 +15,7 @@ const ConstructorItem = ({item, style, type}) => {
     <li className={style}>
       {!isBun(item) && <DragIcon type="primary" />}
       <ConstructorElement
+        handleClose={() => deleteItem(item._id)}
         isLocked={isBun(item)}
         type={type}
         text={name}
