@@ -9,7 +9,7 @@ const App = () => {
 
   useEffect(() => {
     dispatch(setIngredients())
-    }, [])
+    }, [dispatch])
 
   return (
     <>

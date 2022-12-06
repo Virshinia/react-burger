@@ -1,32 +1,50 @@
-import React, {useMemo} from 'react';
+import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
+import {useDrop} from "react-dnd";
 import burgerConstructorStyle from "./burger-constructor.module.css";
 import {isBun} from "../../utils/constatants";
 import TotalCost from "../total-cost/total-cost";
 import ConstructorItem from "../constructor-item/constructor-item";
-import {DELETE_INGREDIENT} from "../../services/actions/burger-constructor";
+import {ADD_INGREDIENT, DELETE_INGREDIENT, ADD_BUN, GET_INGREDIENTS_IN_CONSTRUCTOR} from "../../services/actions/burger-constructor";
 
 const BurgerConstructor = () => {
   const dispatch = useDispatch();
-  const ingredientsInConstructor = useSelector(store => store.burgerConstructor.ingredientsInConstructor);
+  const {ingredients} = useSelector(store => store.ingredients);
 
-  const categoryOfIngredients = useMemo(() => {
-    const bun = ingredientsInConstructor.filter((item) => isBun(item))[0];
-    const others = ingredientsInConstructor.filter((item) => !isBun(item));
-    return {bun, others}
-  },[ingredientsInConstructor])
+  useEffect(() => {
+    const bun = ingredients.filter((item) => isBun(item))[0];
+    const others = ingredients.filter((item) => !isBun(item));
+    dispatch(GET_INGREDIENTS_IN_CONSTRUCTOR({bun, others}))
+  }, [ingredients, dispatch])
 
+  const {bun, others} = useSelector(store => store.burgerConstructor)
 
-  const deleteItem = (id) => {
-    dispatch(DELETE_INGREDIENT(id))
-    console.log(test)
+  const [,dropRef] = useDrop(()=> ({
+    accept: "ingredient",
+    drop: (item) => {
+      isBun(item) ? handleDropBun (item) :
+          handleDropOthers(item)
+    }
+  }))
+
+  const handleDropOthers = item => {
+    dispatch(ADD_INGREDIENT(item))
   }
 
+  const handleDropBun = item => {
+    dispatch(ADD_BUN(item))
+  }
+
+  const deleteItem = (item) => {
+    const indexDeletedItem = others.indexOf(item);
+    dispatch(DELETE_INGREDIENT(indexDeletedItem))
+  }
 
   const renderFewIngredientsForOrder = (array) => {
-    return array.map(item => (
+    return array.map((item, index) => (
       <ConstructorItem
-        key={item._id}
+        key={`${item._id}_${index}`}
+        index={index}
         item={item}
         style={burgerConstructorStyle.defaultItem}
         deleteItem={deleteItem}
@@ -35,26 +53,26 @@ const BurgerConstructor = () => {
   }
 
   return (
-    <section className="mt-25">
-      <ul className={burgerConstructorStyle.list}>
-        {categoryOfIngredients.bun &&
+    <section className="mt-25" ref={dropRef}>
+      <ul className={burgerConstructorStyle.list} >
+        {bun && bun._id &&
           <ConstructorItem
-            key={`${categoryOfIngredients.bun._id}_top`}
-            item={categoryOfIngredients.bun}
+            key={`${bun._id}_top`}
+            item={bun}
             style={burgerConstructorStyle.blockedItem}
             type="top"/>}
-        {renderFewIngredientsForOrder(categoryOfIngredients.others)}
-        {categoryOfIngredients.bun &&
+        {others && renderFewIngredientsForOrder(others)}
+        {bun && bun._id &&
           <ConstructorItem
-            key={`${categoryOfIngredients.bun._id}_bottom`}
-            item={categoryOfIngredients.bun}
+            key={`${bun._id}_bottom`}
+            item={bun}
             style={burgerConstructorStyle.blockedItem}
             type="bottom"/>}
       </ul>
-      {categoryOfIngredients.bun &&
+      {bun &&
         <TotalCost
-          others={categoryOfIngredients.others}
-          bun={categoryOfIngredients.bun}/>}
+          others={others}
+          bun={bun}/>}
     </section>
   )
 }

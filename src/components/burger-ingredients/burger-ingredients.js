@@ -26,7 +26,7 @@ const BurgerIngredients = () => {
 
   const closeIngredientDetails = () => {
     changeVisibilityIngredientDetails();
-    dispatch(RESET_INGREDIENT_DETAILS);
+    dispatch(RESET_INGREDIENT_DETAILS());
   }
 
   const ModalForIngredientDetails = () => {
@@ -61,7 +61,6 @@ const BurgerIngredients = () => {
       dispatch(SET_CURRENT(SAUCE))
     } else {
       dispatch(SET_CURRENT(MAIN))
-
     }
   }
 

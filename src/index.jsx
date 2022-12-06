@@ -10,12 +10,11 @@ import ingredientsReducer from "./services/reducers/burger-ingredients";
 import tabReducer from "./services/reducers/tab-section";
 import constructorReducer from "./services/reducers/burger-constructor";
 
-
 const store = configureStore({
   reducer: {
     ingredients: ingredientsReducer,
     burgerConstructor: constructorReducer,
-    tab: tabReducer
+    tab: tabReducer,
   }
 });
 
