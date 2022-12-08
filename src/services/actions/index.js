@@ -1,4 +1,4 @@
-import {getIngredients} from "../../utils/api";
+import {getIngredientsAPI} from "../../utils/api";
 import {BASE_URL} from "../../utils/constatants";
 import {
   GET_INGREDIENTS,
@@ -8,20 +8,15 @@ import {
 } from "./burger-ingredients";
 
 
-export function setIngredients() {
+export function getIngredients() {
   return function (dispatch) {
     dispatch(GET_INGREDIENTS_REQUEST());
-    getIngredients(`${BASE_URL}/ingredients`).then(res => {
-      if (res.ok) {
-        dispatch(GET_INGREDIENTS_SUCCESS());
-        return res.json();
-      } else {
-        dispatch(GET_INGREDIENTS_ERROR());
-        return Promise.reject(`Ошибка: ${res.status}`)
-      }})
+    getIngredientsAPI(`${BASE_URL}/ingredients`)
       .then( res => {
+        dispatch(GET_INGREDIENTS_SUCCESS());
         dispatch(GET_INGREDIENTS(res.data))}
       ).catch(err => {
+      dispatch(GET_INGREDIENTS_ERROR());
       console.log(err);
     })
   }

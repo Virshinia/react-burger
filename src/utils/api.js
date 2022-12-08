@@ -1,9 +1,21 @@
-const getIngredients = (baseUrl) => {
-  return fetch(baseUrl)
+function checkResponse(res) {
+  if (res.ok) {
+    return res.json();
+  }
+  return Promise.reject(`Ошибка ${res.status}`);
 }
 
-const postOrder = (baseUrl, orderedIngredients) => {
-  return fetch(baseUrl, {
+function request(url, options) {
+  return fetch(url, options).then(checkResponse)
+}
+
+
+const getIngredientsAPI = (baseUrl) => {
+  return request(baseUrl)
+}
+
+const postOrderAPI = (baseUrl, orderedIngredients) => {
+  return request(baseUrl, {
     method: "POST",
     headers: {
       'Accept': 'application/json',
@@ -15,4 +27,4 @@ const postOrder = (baseUrl, orderedIngredients) => {
   });
 }
 
-export {getIngredients, postOrder}
+export {getIngredientsAPI, postOrderAPI}

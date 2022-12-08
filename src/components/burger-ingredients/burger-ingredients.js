@@ -1,4 +1,4 @@
-import React, { useState, useMemo} from 'react';
+import React, { useState, useMemo, useRef} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import burgerIngredientsStyle from "./burger-ingredients.module.css";
 import BurgerIngredient from "../burger-ingredient/burger-ingredient";
@@ -14,6 +14,12 @@ const BurgerIngredients = () => {
   const dispatch = useDispatch();
   const [modalIsVisible, setVisibility] = useState(false);
   const {ingredients, ingredientDetails} = useSelector(store => store.ingredients);
+
+  const refs = {
+    bunRef: useRef(null),
+    sauceRef: useRef(null),
+    mainRef: useRef(null)
+  }
 
   const changeVisibilityIngredientDetails = () => {
     setVisibility(!modalIsVisible);
@@ -68,17 +74,17 @@ const BurgerIngredients = () => {
   return (
     <section className="mt-10">
       <h2 className="text text_type_main-large mb-5">Соберите бургер</h2>
-      <TabSection/>
+      {refs && <TabSection refs={refs}/>}
       <article className={burgerIngredientsStyle.ingredients} onScroll={handleScroll}>
-        <h3 id={`${BUN}-heading`} className="text text_type_main-medium">Булки</h3>
+        <h3 id={`${BUN}-heading`} ref={refs.bunRef} className="text text_type_main-medium">Булки</h3>
         <ul id={BUN} className={burgerIngredientsStyle.category}>
           {renderCategory.buns}
         </ul>
-        <h3 id={`${SAUCE}-heading`} className="text text_type_main-medium">Соусы</h3>
+        <h3 id={`${SAUCE}-heading`} ref={refs.sauceRef} className="text text_type_main-medium">Соусы</h3>
         <ul id={SAUCE} className={burgerIngredientsStyle.category}>
           {renderCategory.sauces}
         </ul>
-        <h3 id={`${MAIN}-heading`} className="text text_type_main-medium">Начинки</h3>
+        <h3 id={`${MAIN}-heading`} ref={refs.mainRef} className="text text_type_main-medium">Начинки</h3>
         <ul id={MAIN} className={burgerIngredientsStyle.category}>
           {renderCategory.mains}
         </ul>

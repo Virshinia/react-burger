@@ -1,17 +1,31 @@
 import React from 'react';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components'
 import tabSectionStyle from './tab-section.module.css'
-import {INGREDIENT_TYPES} from "../../utils/constatants";
+import {INGREDIENT_TYPES, SAUCE, MAIN} from "../../utils/constatants";
 import {useDispatch, useSelector} from "react-redux";
 import {SET_CURRENT} from "../../services/actions/tab-section";
+import PropTypes from "prop-types";
 
-const TabSection = () => {
+const TabSection = ({refs}) => {
   const dispatch = useDispatch();
   const current = useSelector(store => store.tab.current);
+  const {bunRef, mainRef, sauceRef} = refs;
 
   const tabClick = (tab) => {
-   document.querySelector(`#${tab}-heading`).scrollIntoView({behavior: "smooth"});
-   dispatch(SET_CURRENT(tab))
+    let currentHeading
+    switch (tab) {
+      case SAUCE:
+        currentHeading = sauceRef.current;
+        break;
+      case MAIN:
+        currentHeading = mainRef.current;
+        break;
+     default:
+       currentHeading = bunRef.current;
+    }
+
+    currentHeading.scrollIntoView({behavior: "smooth"});
+    dispatch(SET_CURRENT(tab))
   };
 
   const createTabs = () => {
@@ -27,5 +41,9 @@ const TabSection = () => {
       {createTabs()}
     </div>)
 }
+
+TabSection.propTypes = {
+  refs: PropTypes.object.isRequired
+};
 
 export default TabSection

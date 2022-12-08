@@ -4,9 +4,10 @@ import PropTypes from "prop-types";
 import { CurrencyIcon, Button} from '@ya.praktikum/react-developer-burger-ui-components'
 import Modal from "../modal/modal";
 import OrderDetails from "../order-details/order-details";
+import Loader from "../loader/loader";
 import totalCostStyle from "./total-cost.module.css";
 import { ingredientPropTypes } from "../../utils/constatants";
-import {GET_INGREDIENTS_FOR_ORDER, setOrderId } from "../../services/actions/burger-constructor";
+import {CLEAR_ALL_IN_CONSTRUCTOR, GET_INGREDIENTS_FOR_ORDER, setOrderId} from "../../services/actions/burger-constructor";
 import OrderError from "../order-error/order-error";
 
 
@@ -31,17 +32,28 @@ const TotalCost = ({others, bun}) => {
 
   const handleCloseModal = () => {
     setVisibility(!modalIsVisible);
+    dispatch(CLEAR_ALL_IN_CONSTRUCTOR())
   }
 
   const handlePostOrder = () => {
     dispatch(setOrderId(ingredientsForOrder));
-    handleCloseModal();
+    setVisibility(!modalIsVisible);
   }
 
-  const modalForOrderDetails = <Modal closeModal={handleCloseModal}>
-    {(orderId == null && error) ? <OrderError/> :
-      <OrderDetails orderId={orderId} status={orderStatusText}/>
+  const handleModalContent = () => {
+    if (orderId === null && !error) {
+      return <Loader/>
+    } else if (orderId !== null && !error) {
+      return <OrderDetails orderId={orderId} status={orderStatusText}/>
+    } else {
+      return <OrderError/>
     }
+  }
+
+
+
+  const modalForOrderDetails = <Modal closeModal={handleCloseModal}>
+    {handleModalContent()}
   </Modal>
 
   return (

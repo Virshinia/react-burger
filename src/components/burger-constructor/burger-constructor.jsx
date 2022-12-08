@@ -1,22 +1,18 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {useDrop} from "react-dnd";
 import burgerConstructorStyle from "./burger-constructor.module.css";
 import {isBun} from "../../utils/constatants";
 import TotalCost from "../total-cost/total-cost";
 import ConstructorItem from "../constructor-item/constructor-item";
-import {ADD_INGREDIENT, DELETE_INGREDIENT, ADD_BUN, GET_INGREDIENTS_IN_CONSTRUCTOR} from "../../services/actions/burger-constructor";
+import {ADD_INGREDIENT, DELETE_INGREDIENT, ADD_BUN} from "../../services/actions/burger-constructor";
+import ConstructorMessage from "../constructor-message/constructor-message";
+import { v4 as uuid } from 'uuid';
+
+
 
 const BurgerConstructor = () => {
   const dispatch = useDispatch();
-  const {ingredients} = useSelector(store => store.ingredients);
-
-  useEffect(() => {
-    const bun = ingredients.filter((item) => isBun(item))[0];
-    const others = ingredients.filter((item) => !isBun(item));
-    dispatch(GET_INGREDIENTS_IN_CONSTRUCTOR({bun, others}))
-  }, [ingredients, dispatch])
-
   const {bun, others} = useSelector(store => store.burgerConstructor)
 
   const [,dropRef] = useDrop(()=> ({
@@ -28,11 +24,11 @@ const BurgerConstructor = () => {
   }))
 
   const handleDropOthers = item => {
-    dispatch(ADD_INGREDIENT(item))
+    dispatch(ADD_INGREDIENT({...item, uuid: uuid()}));
   }
 
   const handleDropBun = item => {
-    dispatch(ADD_BUN(item))
+    dispatch(ADD_BUN({...item, uuid: uuid()}))
   }
 
   const deleteItem = (item) => {
@@ -43,7 +39,7 @@ const BurgerConstructor = () => {
   const renderFewIngredientsForOrder = (array) => {
     return array.map((item, index) => (
       <ConstructorItem
-        key={`${item._id}_${index}`}
+        key={item.uuid}
         index={index}
         item={item}
         style={burgerConstructorStyle.defaultItem}
@@ -54,22 +50,24 @@ const BurgerConstructor = () => {
 
   return (
     <section className="mt-25" ref={dropRef}>
+
+      {!others[0] && !bun._id && <ConstructorMessage/>}
       <ul className={burgerConstructorStyle.list} >
-        {bun && bun._id &&
+        {bun._id &&
           <ConstructorItem
-            key={`${bun._id}_top`}
+            key={`${bun.uuid}_top`}
             item={bun}
             style={burgerConstructorStyle.blockedItem}
             type="top"/>}
         {others && renderFewIngredientsForOrder(others)}
-        {bun && bun._id &&
+        {bun._id &&
           <ConstructorItem
-            key={`${bun._id}_bottom`}
+            key={`${bun.uuid}_bottom`}
             item={bun}
             style={burgerConstructorStyle.blockedItem}
             type="bottom"/>}
       </ul>
-      {bun &&
+      {bun._id &&
         <TotalCost
           others={others}
           bun={bun}/>}
