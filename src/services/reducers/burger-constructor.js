@@ -43,7 +43,7 @@ const handleDeleteIngredient = (state, {payload}) => ({
 const handleAddIngredient = (state, {payload}) => ({
   ...state,
   ingredientsForOrder: [payload._id, ...state.ingredientsForOrder ],
-  others: [payload, ...state.others]
+  others: [ ...state.others, payload]
 })
 
 function handleMoveIngredient (state, {payload}) {
