@@ -2,14 +2,19 @@ import PropTypes from "prop-types";
 
 export const BASE_URL = 'https://norma.nomoreparties.space/api'
 
-export const INGREDIENT_TYPES = {
-  bun: "bun",
-  sauce: "sauce",
-  main: "main",
-}
+export const BUN = 'bun'
+export const SAUCE = 'sauce'
+export const MAIN = 'main'
+
+
+export const INGREDIENT_TYPES = [
+  {type: BUN, name: "булка"},
+  {type: SAUCE, name: "соус"},
+  {type: MAIN, name: "начинка"}
+]
 
 export const isBun = (item) => {
-  return item.type === INGREDIENT_TYPES.bun
+  return item.type === BUN
 }
 
 export const ingredientPropTypes = {

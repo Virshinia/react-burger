@@ -1,29 +1,45 @@
-import React, {useContext, useState, useMemo} from 'react';
-import { Tab } from '@ya.praktikum/react-developer-burger-ui-components'
+import React, { useState, useMemo, useRef} from 'react';
+import {useDispatch, useSelector} from "react-redux";
 import burgerIngredientsStyle from "./burger-ingredients.module.css";
 import BurgerIngredient from "../burger-ingredient/burger-ingredient";
-import {INGREDIENT_TYPES} from '../../utils/constatants';
-import {IngredientsContext} from "../../services/appContext";
+import {BUN, SAUCE, MAIN} from '../../utils/constatants';
 import Modal from "../modal/modal";
 import IngredientDetails from "../ingredient-details/ingredient-details";
+import {RESET_INGREDIENT_DETAILS, SHOW_INGREDIENT_DETAILS} from "../../services/actions/burger-ingredients";
+import TabSection from "../tab-section/tab-section";
+import {SET_CURRENT} from "../../services/actions/tab-section";
 
 
 const BurgerIngredients = () => {
-  const [current, setCurrent] = useState(INGREDIENT_TYPES.bun);
+  const dispatch = useDispatch();
   const [modalIsVisible, setVisibility] = useState(false);
-  const [detailsForModal, setDetails] = useState({});
-  const ingredients = useContext(IngredientsContext);
+  const {ingredients, ingredientDetails} = useSelector(store => store.ingredients);
 
-  const changeVisibilityIngredientDetails = (item) => {
+  const refs = {
+    bunRef: useRef(null),
+    sauceRef: useRef(null),
+    mainRef: useRef(null)
+  }
+
+  const changeVisibilityIngredientDetails = () => {
     setVisibility(!modalIsVisible);
-    setDetails(item);
+  }
+
+  const openIngredientDetails = (item) => {
+    changeVisibilityIngredientDetails();
+    dispatch(SHOW_INGREDIENT_DETAILS(item));
+  }
+
+  const closeIngredientDetails = () => {
+    changeVisibilityIngredientDetails();
+    dispatch(RESET_INGREDIENT_DETAILS());
   }
 
   const ModalForIngredientDetails = () => {
     return (
       <Modal title="Детали ингредиента"
-             closeModal={changeVisibilityIngredientDetails}>
-        <IngredientDetails item={detailsForModal} />
+             closeModal={closeIngredientDetails}>
+        <IngredientDetails item={ingredientDetails} />
       </Modal>
     )
   }
@@ -31,48 +47,45 @@ const BurgerIngredients = () => {
   const createCategory = (array, categoryName) => {
     return array.map(item => (
       item.type === categoryName &&
-      <BurgerIngredient key={item._id} item={item} openModal={changeVisibilityIngredientDetails}/>
+      <BurgerIngredient key={item._id} item={item} openModal={openIngredientDetails}/>
     ))
   }
 
   const renderCategory = useMemo(() => {
-    const buns = createCategory(ingredients, INGREDIENT_TYPES.bun);
-    const sauces = createCategory(ingredients, INGREDIENT_TYPES.sauce);
-    const mains = createCategory(ingredients, INGREDIENT_TYPES.main);
+    const buns = createCategory(ingredients, BUN);
+    const sauces = createCategory(ingredients, SAUCE);
+    const mains = createCategory(ingredients, MAIN);
     return {buns, sauces, mains}
   }, [ingredients])
 
-  const tabClick = (tab) => {
-    setCurrent(tab);
-    document.querySelector(`#${tab}`).scrollIntoView({behavior: "smooth"});
-  };
+  const handleScroll = event => {
+    const scrollPosition = event.currentTarget.scrollTop
+    const childrenOfScrollArea = event.currentTarget.children
+    if (scrollPosition < childrenOfScrollArea.bun.clientHeight) {
+      dispatch(SET_CURRENT(BUN))
+    } else if (scrollPosition < childrenOfScrollArea.sauce.clientHeight){
+      dispatch(SET_CURRENT(SAUCE))
+    } else {
+      dispatch(SET_CURRENT(MAIN))
+    }
+  }
 
 
   return (
     <section className="mt-10">
       <h2 className="text text_type_main-large mb-5">Соберите бургер</h2>
-      <div style={{ display: 'flex' }}>
-        <Tab value={INGREDIENT_TYPES.bun} active={current === `${INGREDIENT_TYPES.bun}`} onClick={tabClick}>
-          Булки
-        </Tab>
-        <Tab value={INGREDIENT_TYPES.sauce} active={current === `${INGREDIENT_TYPES.sauce}`} onClick={tabClick}>
-          Соусы
-        </Tab>
-        <Tab value={INGREDIENT_TYPES.main} active={current === `${INGREDIENT_TYPES.main}`} onClick={tabClick}>
-          Начинки
-        </Tab>
-      </div>
-      <article className={burgerIngredientsStyle.ingredients}>
-        <h3 id={INGREDIENT_TYPES.bun} className="text text_type_main-medium">Булки</h3>
-        <ul className={burgerIngredientsStyle.category}>
+      {refs && <TabSection refs={refs}/>}
+      <article className={burgerIngredientsStyle.ingredients} onScroll={handleScroll}>
+        <h3 id={`${BUN}-heading`} ref={refs.bunRef} className="text text_type_main-medium">Булки</h3>
+        <ul id={BUN} className={burgerIngredientsStyle.category}>
           {renderCategory.buns}
         </ul>
-        <h3 id={INGREDIENT_TYPES.sauce} className="text text_type_main-medium">Соусы</h3>
-        <ul className={burgerIngredientsStyle.category}>
+        <h3 id={`${SAUCE}-heading`} ref={refs.sauceRef} className="text text_type_main-medium">Соусы</h3>
+        <ul id={SAUCE} className={burgerIngredientsStyle.category}>
           {renderCategory.sauces}
         </ul>
-        <h3 id={INGREDIENT_TYPES.main} className="text text_type_main-medium">Начинки</h3>
-        <ul className={burgerIngredientsStyle.category}>
+        <h3 id={`${MAIN}-heading`} ref={refs.mainRef} className="text text_type_main-medium">Начинки</h3>
+        <ul id={MAIN} className={burgerIngredientsStyle.category}>
           {renderCategory.mains}
         </ul>
       </article>

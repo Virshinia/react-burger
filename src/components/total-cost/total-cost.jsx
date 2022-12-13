@@ -1,46 +1,59 @@
 import React, {useState, useEffect} from 'react';
+import {useDispatch, useSelector} from "react-redux";
 import PropTypes from "prop-types";
 import { CurrencyIcon, Button} from '@ya.praktikum/react-developer-burger-ui-components'
 import Modal from "../modal/modal";
 import OrderDetails from "../order-details/order-details";
+import Loader from "../loader/loader";
 import totalCostStyle from "./total-cost.module.css";
-import { ingredientPropTypes, BASE_URL } from "../../utils/constatants";
-import { postOrder } from "../../utils/api";
+import { ingredientPropTypes } from "../../utils/constatants";
+import {CLEAR_ALL_IN_CONSTRUCTOR, GET_INGREDIENTS_FOR_ORDER, setOrderId} from "../../services/actions/burger-constructor";
+import OrderError from "../order-error/order-error";
+
 
 const TotalCost = ({others, bun}) => {
+  const dispatch = useDispatch();
+  const error = useSelector(store => store.burgerConstructor.postOrderError);
 
   const sumOfPrice = () => {
     return others.reduce((total, item) => total + item.price, 0) + bun.price*2;
   }
 
   const orderStatusText = "Ваш заказ начали готовить";
-  const [orderStatus, setOrder] = useState(false);
-  const [orderId, setOrderId] = useState(null);
+  const [modalIsVisible, setVisibility] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0);
-  const [ingredientsIdsForOrder, setIngredientsIds] = useState([]);
 
   useEffect(() => {
     setTotalPrice(sumOfPrice)
-    setIngredientsIds([bun._id, ...others.map((item) => item._id)])
-  }, [others, bun])
+    dispatch((GET_INGREDIENTS_FOR_ORDER([bun._id, ...others.map((item) => item._id)])))
+  }, [others, bun, dispatch])
 
-  const handleSetOrder = () => {
-    setOrder(!orderStatus);
+  const {ingredientsForOrder, orderId} = useSelector(store => store.burgerConstructor)
+
+  const handleCloseModal = () => {
+    setVisibility(!modalIsVisible);
+    dispatch(CLEAR_ALL_IN_CONSTRUCTOR())
   }
 
   const handlePostOrder = () => {
-    postOrder(`${BASE_URL}/orders`, ingredientsIdsForOrder)
-      .then (data => {
-        setOrderId(data.order.number)
-          handleSetOrder()
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    dispatch(setOrderId(ingredientsForOrder));
+    setVisibility(!modalIsVisible);
   }
 
-  const modalForOrderDetails = <Modal closeModal={handleSetOrder}>
-    {orderId !== null && <OrderDetails orderId={orderId} status={orderStatusText}/>}
+  const handleModalContent = () => {
+    if (orderId === null && !error) {
+      return <Loader/>
+    } else if (orderId !== null && !error) {
+      return <OrderDetails orderId={orderId} status={orderStatusText}/>
+    } else {
+      return <OrderError/>
+    }
+  }
+
+
+
+  const modalForOrderDetails = <Modal closeModal={handleCloseModal}>
+    {handleModalContent()}
   </Modal>
 
   return (
@@ -52,7 +65,7 @@ const TotalCost = ({others, bun}) => {
       <Button htmlType="button" type="primary" size="medium" onClick={handlePostOrder}>
         Оформить заказ
       </Button>
-      {orderStatus && modalForOrderDetails}
+      {modalIsVisible && modalForOrderDetails}
     </div>
   )
 }

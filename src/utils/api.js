@@ -1,16 +1,20 @@
-const _checkRes = (res) => {
-  return res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`);
-};
-
-const request = (baseUrl, options) => {
-  return fetch(baseUrl, options).then(res => _checkRes(res));
-};
-
-const getIngredients = (baseUrl) => {
-  return request(baseUrl);
+function checkResponse(res) {
+  if (res.ok) {
+    return res.json();
+  }
+  return Promise.reject(`Ошибка ${res.status}`);
 }
 
-const postOrder = (baseUrl, orderedIngredients) => {
+function request(url, options) {
+  return fetch(url, options).then(checkResponse)
+}
+
+
+const getIngredientsAPI = (baseUrl) => {
+  return request(baseUrl)
+}
+
+const postOrderAPI = (baseUrl, orderedIngredients) => {
   return request(baseUrl, {
     method: "POST",
     headers: {
@@ -23,4 +27,4 @@ const postOrder = (baseUrl, orderedIngredients) => {
   });
 }
 
-export {getIngredients, postOrder}
+export {getIngredientsAPI, postOrderAPI}
