@@ -5,11 +5,9 @@ import burgerConstructorStyle from "./burger-constructor.module.css";
 import {isBun} from "../../utils/constatants";
 import TotalCost from "../total-cost/total-cost";
 import ConstructorItem from "../constructor-item/constructor-item";
-import {ADD_INGREDIENT, DELETE_INGREDIENT, ADD_BUN} from "../../services/actions/burger-constructor";
+import {addBun, addIngredient, deleteIngredient} from "../../services/reducers/burger-constructor";
 import ConstructorMessage from "../constructor-message/constructor-message";
 import { v4 as uuid } from 'uuid';
-
-
 
 const BurgerConstructor = () => {
   const dispatch = useDispatch();
@@ -24,16 +22,15 @@ const BurgerConstructor = () => {
   }))
 
   const handleDropOthers = item => {
-    dispatch(ADD_INGREDIENT({...item, uuid: uuid()}));
+    dispatch(addIngredient({...item, uuid: uuid()}));
   }
 
   const handleDropBun = item => {
-    dispatch(ADD_BUN({...item, uuid: uuid()}))
+    dispatch(addBun({...item, uuid: uuid()}))
   }
 
   const deleteItem = (item) => {
-    const indexDeletedItem = others.indexOf(item);
-    dispatch(DELETE_INGREDIENT(indexDeletedItem))
+    dispatch(deleteIngredient(item.uuid))
   }
 
   const renderFewIngredientsForOrder = (array) => {

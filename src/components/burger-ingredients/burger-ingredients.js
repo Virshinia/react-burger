@@ -5,9 +5,9 @@ import BurgerIngredient from "../burger-ingredient/burger-ingredient";
 import {BUN, SAUCE, MAIN} from '../../utils/constatants';
 import Modal from "../modal/modal";
 import IngredientDetails from "../ingredient-details/ingredient-details";
-import {RESET_INGREDIENT_DETAILS, SHOW_INGREDIENT_DETAILS} from "../../services/actions/burger-ingredients";
+import {showIngredientDetails, resetIngredientDetails} from "../../services/reducers/burger-ingredients";
 import TabSection from "../tab-section/tab-section";
-import {SET_CURRENT} from "../../services/actions/tab-section";
+import {setCurrentTab} from "../../services/reducers/tab-section"
 
 
 const BurgerIngredients = () => {
@@ -27,12 +27,12 @@ const BurgerIngredients = () => {
 
   const openIngredientDetails = (item) => {
     changeVisibilityIngredientDetails();
-    dispatch(SHOW_INGREDIENT_DETAILS(item));
+    dispatch(showIngredientDetails(item));
   }
 
   const closeIngredientDetails = () => {
     changeVisibilityIngredientDetails();
-    dispatch(RESET_INGREDIENT_DETAILS());
+    dispatch(resetIngredientDetails());
   }
 
   const ModalForIngredientDetails = () => {
@@ -62,11 +62,11 @@ const BurgerIngredients = () => {
     const scrollPosition = event.currentTarget.scrollTop
     const childrenOfScrollArea = event.currentTarget.children
     if (scrollPosition < childrenOfScrollArea.bun.clientHeight) {
-      dispatch(SET_CURRENT(BUN))
+      dispatch(setCurrentTab(BUN))
     } else if (scrollPosition < childrenOfScrollArea.sauce.clientHeight){
-      dispatch(SET_CURRENT(SAUCE))
+      dispatch(setCurrentTab(SAUCE))
     } else {
-      dispatch(SET_CURRENT(MAIN))
+      dispatch(setCurrentTab(MAIN))
     }
   }
 

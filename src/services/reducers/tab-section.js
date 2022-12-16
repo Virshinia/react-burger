@@ -1,18 +1,18 @@
-import { handleActions } from 'redux-actions'
-import { SET_CURRENT } from "../actions/tab-section";
+import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   current: 'bun'
 }
 
-const handleTabSwitch = (state, {payload}) => ({
-  ...state,
-  current: payload
+export const tabSlice = createSlice({
+  name: 'tab',
+  initialState,
+  reducers: {
+    setCurrentTab: (state, action) => {
+      state.current = action.payload
+    }
+  }
 })
 
-const tabReducer = handleActions({
-  [SET_CURRENT]: handleTabSwitch,
-}, initialState)
-
-
-export default tabReducer;
+export const {setCurrentTab} = tabSlice.actions
+export default tabSlice.reducer;

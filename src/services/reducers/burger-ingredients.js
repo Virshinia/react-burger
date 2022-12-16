@@ -1,13 +1,23 @@
-import {handleActions} from "redux-actions";
+import { createSlice,  createAsyncThunk } from '@reduxjs/toolkit'
+import {BASE_URL} from "../../utils/constatants";
 
-import {
-  GET_INGREDIENTS,
-  SHOW_INGREDIENT_DETAILS,
-  RESET_INGREDIENT_DETAILS,
-  GET_INGREDIENTS_REQUEST,
-  GET_INGREDIENTS_SUCCESS,
-  GET_INGREDIENTS_ERROR
-} from '../actions/burger-ingredients'
+export const getIngredients = createAsyncThunk(
+  'ingredients/getIngredients',
+  async (_, {fulfillWithValue, rejectWithValue}) => {
+    try {
+      const res = await fetch (`${BASE_URL}/ingredients`);
+      if (!res.ok) {
+        throw new Error(`HTTP error: ${res.status}`);
+      }
+      const data = await res.json();
+      return fulfillWithValue(data.data);
+    }
+    catch (error) {
+      console.error(`Could not get ingredients: ${error}`);
+      return rejectWithValue(error)
+    }
+  }
+  )
 
 const initialState = {
   ingredients: [],
@@ -17,53 +27,36 @@ const initialState = {
   requestError: false,
 }
 
-const handleGetIngredients = (state, {payload}) => ({
-  ...state,
-  ingredients: payload
+export const ingredientsSlice = createSlice({
+  name: 'ingredients',
+  initialState,
+  reducers: {
+    showIngredientDetails: (state, action) => {
+      state.ingredientDetails = action.payload
+    },
+    resetIngredientDetails: (state) => {
+      state.ingredientDetails = {}
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(getIngredients.pending, (state) => {
+      state.ingredientsRequested = true
+    })
+    builder.addCase(getIngredients.fulfilled, (state, action) => {
+      state.ingredients = action.payload;
+      state.requestSucceed = true;
+      state.ingredientsRequested = false;
+    })
+    builder.addCase(getIngredients.rejected, (state) => {
+      state.ingredientsRequested = false;
+      state.requestSucceed = false;
+      state.requestError = true;
+      state.ingredients = initialState.ingredients;
+      state.ingredientsInConstructor = initialState.ingredientsInConstructor
+    })
+  }
 })
 
-
-const handleShowIngredientDetails = (state, {payload}) => ({
-  ...state,
-  ingredientDetails: payload
-})
-
-const handleResetIngredientDetails = (state) => ({
-  ...state,
-  ingredientDetails: {}
-})
-
-
-const handleIngredientsRequest = (state) => ({
-  ...state,
-  ingredientsRequested: true
-})
-
-const handleIngredientsSuccess = (state) => ({
-  ...state,
-  ingredientsRequested: false,
-  requestSucceed: true
-})
-
-const handleIngredientsError = (state) => ({
-  ...state,
-  ingredientsRequested: false,
-  requestSucceed: false,
-  requestError: true,
-  ingredients: initialState.ingredients,
-  ingredientsInConstructor: initialState.ingredientsInConstructor
-})
-
-
-const ingredientsReducer = handleActions({
-  [GET_INGREDIENTS]: handleGetIngredients,
-  [SHOW_INGREDIENT_DETAILS]: handleShowIngredientDetails,
-  [RESET_INGREDIENT_DETAILS]: handleResetIngredientDetails,
-  [GET_INGREDIENTS_REQUEST]: handleIngredientsRequest,
-  [GET_INGREDIENTS_SUCCESS]: handleIngredientsSuccess,
-  [GET_INGREDIENTS_ERROR]: handleIngredientsError,
-}, initialState)
-
-
-export default ingredientsReducer
+export const {showIngredientDetails, resetIngredientDetails} = ingredientsSlice.actions
+export default ingredientsSlice.reducer;
 

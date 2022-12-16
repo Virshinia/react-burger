@@ -1,16 +1,5 @@
-import {handleActions} from "redux-actions";
-
-import {
-  DELETE_INGREDIENT,
-  ADD_INGREDIENT,
-  GET_ORDER_NUMBER,
-  GET_INGREDIENTS_FOR_ORDER,
-  ADD_BUN,
-  MOVE_INGREDIENT,
-  CLEAR_ALL_IN_CONSTRUCTOR,
-  POST_ORDER_SUCCEED, POST_ORDER_REQUEST, POST_ORDER_ERROR,
-} from '../actions/burger-constructor'
-import {isBun} from "../../utils/constatants";
+import {BASE_URL} from "../../utils/constatants";
+import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 
 
 const initialState = {
@@ -23,82 +12,86 @@ const initialState = {
   postOrderError: false,
 }
 
-const handleGetIngredientsForOrder = (state, {payload}) => ({
-  ...state,
-  ingredientsForOrder: payload
-})
-
-
-const handleGetOrderId = (state, {payload}) => ({
-  ...state,
-  orderId: payload
-})
-
-const handleDeleteIngredient = (state, {payload}) => ({
-  ...state,
-  ingredientsForOrder: state.ingredientsForOrder.filter( (item, index) => index !== payload),
-  others: state.others.filter( (item, index) => index !== payload),
-})
-
-const handleAddIngredient = (state, {payload}) => ({
-  ...state,
-  ingredientsForOrder: [payload._id, ...state.ingredientsForOrder ],
-  others: [ ...state.others, payload]
-})
-
-function handleMoveIngredient (state, {payload}) {
-  const copyArr = [...state.others];
-  copyArr.splice(payload.hoverIndex, 0, copyArr.splice(payload.dragIndex, 1)[0]);
-  return {
-    ...state,
-    others: copyArr
+export const postOrder = createAsyncThunk(
+  'constructor/postOrder',
+  async (ids, {fulfillWithValue, rejectWithValue}) => {
+    try {
+      const res = await fetch (`${BASE_URL}/orders`, {
+        method: "POST",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          "ingredients": ids
+        })
+      });
+      if (!res.ok) {
+        throw new Error(`HTTP error: ${res.status}`);
+      }
+      const data = await res.json();
+      return fulfillWithValue(data.order.number);
+    }
+    catch (error) {
+      console.error(`Could not get orderId: ${error}`);
+      return rejectWithValue(error)
+    }
   }
-}
+)
 
-const handleAddBun = (state, {payload}) => ({
-  ...state,
-  ingredientsForOrder: [...state.ingredientsForOrder.filter( (item) => !isBun(item)), payload._id],
-  bun: payload
+
+export const constructorSlice = createSlice({
+  name: 'constructor',
+  initialState,
+  reducers: {
+    addIngredient: (state, action) => {
+      state.others.push(action.payload)
+    },
+    addBun: (state, action) => {
+      state.bun = action.payload
+    },
+    deleteIngredient: (state, action) => {
+      state.others = state.others.filter( (item) => item.uuid !== action.payload)
+    },
+    moveIngredient: (state, action) => {
+      state.others.splice(action.payload.hoverIndex, 0, state.others.splice(action.payload.dragIndex, 1)[0]);
+    },
+    clearAllIngredients: (state) => {
+      state.ingredientsForOrder = initialState.ingredientsForOrder;
+      state.others = initialState.others;
+      state.bun = initialState.bun
+    },
+    getIngredientsForOder: (state, action) => {
+      console.log(action.payload);
+      state.ingredientsForOrder = action.payload
+    },
+    getOrderId: (state, {payload}) => {
+      state.orderId = payload
+    }
+  },
+  extraReducers: (builder) => {
+    builder.addCase(postOrder.pending, (state) => {
+      state.postOrderRequested = true;
+    })
+    builder.addCase(postOrder.fulfilled, (state, action) => {
+      state.orderId = action.payload;
+      state.postOrderSucceed = true;
+      state.postOrderRequested = false;
+    })
+    builder.addCase(postOrder.rejected, (state) => {
+      state.postOrderRequested = false;
+      state.postOrderSucceed = false;
+      state.postOrderError = true;
+    })
+  }
 })
 
-const handleClearAllIngredients = (state) => ({
-  ...state,
-  ingredientsForOrder: initialState.ingredientsForOrder,
-  others: initialState.others,
-  bun: initialState.bun,
-})
-
-const handlePostOrderRequest = (state) => ({
-  ...state,
-  orderId: initialState.orderId,
-  postOrderRequested: true
-})
-
-const handlePostOrderSucceed = (state) => ({
-  ...state,
-  postOrderRequested: false,
-  postOrderSucceed: true
-})
-
-const handlePostOrderError = (state) => ({
-  ...state,
-  postOrderRequested: false,
-  postOrderError: true
-})
-
-
-const constructorReducer = handleActions({
-  [GET_INGREDIENTS_FOR_ORDER]: handleGetIngredientsForOrder,
-  [GET_ORDER_NUMBER]: handleGetOrderId,
-  [DELETE_INGREDIENT]: handleDeleteIngredient,
-  [ADD_INGREDIENT]: handleAddIngredient,
-  [ADD_BUN]: handleAddBun,
-  [MOVE_INGREDIENT]: handleMoveIngredient,
-  [CLEAR_ALL_IN_CONSTRUCTOR]: handleClearAllIngredients,
-  [POST_ORDER_REQUEST]: handlePostOrderRequest,
-  [POST_ORDER_SUCCEED]: handlePostOrderSucceed,
-  [POST_ORDER_ERROR]: handlePostOrderError,
-}, initialState)
-
-
-export default constructorReducer
+export const {
+  addIngredient,
+  addBun,
+  deleteIngredient,
+  clearAllIngredients,
+  moveIngredient,
+  getIngredientsForOder,
+  getOrderId
+} = constructorSlice.actions

@@ -4,7 +4,7 @@ import { ingredientPropTypes, isBun } from "../../utils/constatants";
 import PropTypes from "prop-types";
 import {useDrag, useDrop} from "react-dnd";
 import {useDispatch} from "react-redux";
-import {MOVE_INGREDIENT} from "../../services/actions/burger-constructor";
+import {moveIngredient} from "../../services/reducers/burger-constructor";
 
 const ConstructorItem = ({item, style, type, deleteItem, index}) => {
 
@@ -51,7 +51,7 @@ const ConstructorItem = ({item, style, type, deleteItem, index}) => {
         return
       }
 
-      dispatch(MOVE_INGREDIENT({dragIndex, hoverIndex}));
+      dispatch(moveIngredient({dragIndex, hoverIndex}));
 
       item.index = hoverIndex
     }

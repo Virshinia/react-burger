@@ -7,7 +7,7 @@ import OrderDetails from "../order-details/order-details";
 import Loader from "../loader/loader";
 import totalCostStyle from "./total-cost.module.css";
 import { ingredientPropTypes } from "../../utils/constatants";
-import {CLEAR_ALL_IN_CONSTRUCTOR, GET_INGREDIENTS_FOR_ORDER, setOrderId} from "../../services/actions/burger-constructor";
+import {clearAllIngredients, getIngredientsForOder, postOrder} from "../../services/reducers/burger-constructor";
 import OrderError from "../order-error/order-error";
 
 
@@ -25,18 +25,18 @@ const TotalCost = ({others, bun}) => {
 
   useEffect(() => {
     setTotalPrice(sumOfPrice)
-    dispatch((GET_INGREDIENTS_FOR_ORDER([bun._id, ...others.map((item) => item._id)])))
+    dispatch((getIngredientsForOder([bun._id, ...others.map((item) => item._id)])))
   }, [others, bun, dispatch])
 
   const {ingredientsForOrder, orderId} = useSelector(store => store.burgerConstructor)
 
   const handleCloseModal = () => {
     setVisibility(!modalIsVisible);
-    dispatch(CLEAR_ALL_IN_CONSTRUCTOR())
+    dispatch(clearAllIngredients())
   }
 
   const handlePostOrder = () => {
-    dispatch(setOrderId(ingredientsForOrder));
+    dispatch(postOrder(ingredientsForOrder));
     setVisibility(!modalIsVisible);
   }
 
@@ -50,11 +50,10 @@ const TotalCost = ({others, bun}) => {
     }
   }
 
-
-
   const modalForOrderDetails = <Modal closeModal={handleCloseModal}>
     {handleModalContent()}
   </Modal>
+
 
   return (
     <div className={totalCostStyle.info}>

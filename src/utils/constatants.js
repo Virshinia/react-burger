@@ -6,7 +6,6 @@ export const BUN = 'bun'
 export const SAUCE = 'sauce'
 export const MAIN = 'main'
 
-
 export const INGREDIENT_TYPES = [
   {type: BUN, name: "булка"},
   {type: SAUCE, name: "соус"},

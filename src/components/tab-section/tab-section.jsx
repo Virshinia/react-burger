@@ -3,7 +3,7 @@ import { Tab } from '@ya.praktikum/react-developer-burger-ui-components'
 import tabSectionStyle from './tab-section.module.css'
 import {INGREDIENT_TYPES, SAUCE, MAIN} from "../../utils/constatants";
 import {useDispatch, useSelector} from "react-redux";
-import {SET_CURRENT} from "../../services/actions/tab-section";
+import {setCurrentTab} from "../../services/reducers/tab-section"
 import PropTypes from "prop-types";
 
 const TabSection = ({refs}) => {
@@ -25,7 +25,7 @@ const TabSection = ({refs}) => {
     }
 
     currentHeading.scrollIntoView({behavior: "smooth"});
-    dispatch(SET_CURRENT(tab))
+    dispatch(setCurrentTab(tab))
   };
 
   const createTabs = () => {
