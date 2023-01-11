@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef} from 'react';
+import React, {useState, useMemo, useRef} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import burgerIngredientsStyle from "./burger-ingredients.module.css";
 import BurgerIngredient from "../burger-ingredient/burger-ingredient";
@@ -26,11 +26,13 @@ const BurgerIngredients = () => {
   }
 
   const openIngredientDetails = (item) => {
+    window.history.replaceState(null, "", `/ingredients/${item._id}`)
     changeVisibilityIngredientDetails();
     dispatch(showIngredientDetails(item));
   }
 
   const closeIngredientDetails = () => {
+    window.history.replaceState(null, '', "/")
     changeVisibilityIngredientDetails();
     dispatch(resetIngredientDetails());
   }

@@ -42,7 +42,7 @@ const TotalCost = ({others, bun}) => {
 
   const handleModalContent = () => {
     if (orderId === null && !error) {
-      return <Loader/>
+      return <Loader text="Мы обрабатываем ваш заказ..."/>
     } else if (orderId !== null && !error) {
       return <OrderDetails orderId={orderId} status={orderStatusText}/>
     } else {
