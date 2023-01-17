@@ -1,4 +1,6 @@
 .wrapper {
+  max-width: 1280px;
+  margin: 0 auto;
   display: flex;
   padding-top: 120px;
   gap: 60px;
@@ -12,20 +14,7 @@
   margin-bottom: 80px;
 }
 
-.aside {
-  display: flex;
-  flex-direction: column;
-  min-width: 320px;
-  max-width: 320px;
+.buttons {
+  align-self: flex-end;
 }
 
-.link {
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-  min-height: 64px;
-}
-
-.link:last-of-type {
-  margin-bottom: 80px;
-}

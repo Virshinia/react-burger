@@ -14,6 +14,7 @@ import OrderError from "../order-error/order-error";
 const TotalCost = ({others, bun}) => {
   const dispatch = useDispatch();
   const error = useSelector(store => store.burgerConstructor.postOrderError);
+  const {userIsAuthenticated} = useSelector(store => store.user);
 
   const sumOfPrice = () => {
     return others.reduce((total, item) => total + item.price, 0) + bun.price*2;
@@ -61,7 +62,12 @@ const TotalCost = ({others, bun}) => {
         <span className="text text_type_digits-medium">{totalPrice}</span>
         <CurrencyIcon type="primary" />
       </span>
-      <Button htmlType="button" type="primary" size="medium" onClick={handlePostOrder}>
+      <Button
+        htmlType="button"
+        type="primary"
+        size="medium"
+        onClick={handlePostOrder}
+        disabled={!userIsAuthenticated}>
         Оформить заказ
       </Button>
       {modalIsVisible && modalForOrderDetails}

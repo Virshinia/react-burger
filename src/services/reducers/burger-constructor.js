@@ -1,6 +1,6 @@
 import {BASE_URL} from "../../utils/constatants";
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
-
+import {postOrderAPI} from "../../utils/api";
 
 const initialState = {
   bun: {},
@@ -13,32 +13,13 @@ const initialState = {
 }
 
 export const postOrder = createAsyncThunk(
-  'constructor/postOrder',
-  async (ids, {fulfillWithValue, rejectWithValue}) => {
-    try {
-      const res = await fetch (`${BASE_URL}/orders`, {
-        method: "POST",
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          "ingredients": ids
-        })
-      });
-      if (!res.ok) {
-        throw new Error(`HTTP error: ${res.status}`);
-      }
-      const data = await res.json();
-      return fulfillWithValue(data.order.number);
-    }
-    catch (error) {
-      console.error(`Could not get orderId: ${error}`);
-      return rejectWithValue(error)
-    }
+  'constructor/postOrder', (ids) => {
+    return postOrderAPI(`${BASE_URL}/orders`, ids)
+      .catch(err => {
+        console.error(`Could not post order: ${err}`);
+      })
   }
 )
-
 
 export const constructorSlice = createSlice({
   name: 'constructor',
@@ -62,7 +43,6 @@ export const constructorSlice = createSlice({
       state.bun = initialState.bun
     },
     getIngredientsForOder: (state, action) => {
-      console.log(action.payload);
       state.ingredientsForOrder = action.payload
     },
     getOrderId: (state, {payload}) => {
@@ -74,7 +54,7 @@ export const constructorSlice = createSlice({
       state.postOrderRequested = true;
     })
     builder.addCase(postOrder.fulfilled, (state, action) => {
-      state.orderId = action.payload;
+      state.orderId = action.payload.order.number;
       state.postOrderSucceed = true;
       state.postOrderRequested = false;
     })

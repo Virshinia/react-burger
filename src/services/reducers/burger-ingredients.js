@@ -1,23 +1,14 @@
 import { createSlice,  createAsyncThunk } from '@reduxjs/toolkit'
 import {BASE_URL} from "../../utils/constatants";
+import {getIngredientsAPI} from "../../utils/api";
 
 export const getIngredients = createAsyncThunk(
-  'ingredients/getIngredients',
-  async (_, {fulfillWithValue, rejectWithValue}) => {
-    try {
-      const res = await fetch (`${BASE_URL}/ingredients`);
-      if (!res.ok) {
-        throw new Error(`HTTP error: ${res.status}`);
-      }
-      const data = await res.json();
-      return fulfillWithValue(data.data);
-    }
-    catch (error) {
-      console.error(`Could not get ingredients: ${error}`);
-      return rejectWithValue(error)
-    }
-  }
-  )
+  'ingredients/getIngredients', () => {
+    return getIngredientsAPI(`${BASE_URL}/ingredients`)
+      .catch (err => {
+        console.error(`Could not get ingredients: ${err}`);
+      })
+  });
 
 const initialState = {
   ingredients: [],
@@ -43,7 +34,7 @@ export const ingredientsSlice = createSlice({
       state.ingredientsRequested = true
     })
     builder.addCase(getIngredients.fulfilled, (state, action) => {
-      state.ingredients = action.payload;
+      state.ingredients = action.payload.data;
       state.requestSucceed = true;
       state.ingredientsRequested = false;
     })

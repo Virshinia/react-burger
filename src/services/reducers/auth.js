@@ -1,142 +1,100 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import {BASE_URL, saveCookie, getCookie} from "../../utils/constatants";
 
-export const registerRequest = createAsyncThunk(
-  'auth/registerRequest',
-  async (form, {fulfillWithValue, rejectWithValue}) => {
-    try {
-      const res = await fetch (`${BASE_URL}/auth/register`,
-        {
-          method: 'POST',
-          mode: 'cors',
-          cache: 'no-cache',
-          credentials: 'same-origin',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          redirect: 'follow',
-          referrerPolicy: 'no-referrer',
-          body: JSON.stringify(form)
-        });
-      if (!res.ok) {
-        throw new Error(`HTTP error: ${res.status}`);
-      }
-      const data = await res.json();
-      saveCookie(data);
-      return fulfillWithValue(data.user);
-    }
-    catch (error) {
-      console.error(`Could not register: ${error}`);
-      return rejectWithValue(error)
-    }
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import {BASE_URL} from "../../utils/constatants";
+import {saveCookie} from "../../utils/cookies"
+import {
+  changeUserInfoAPI,
+  getUserAPI,
+  loginAPI,
+  logoutAPI,
+  passwordChangeRequestAPI,
+  registerRequestAPI, resetPasswordAPI
+} from "../../utils/api";
+
+
+export const getUser = createAsyncThunk(
+  'auth/getUser', (_, {fulfillWithValue, rejectWithValue}) => {
+    return getUserAPI(`${BASE_URL}/auth/user`)
+      .then (data => {
+        return fulfillWithValue(data.user)
+      })
+      .catch (err => {
+        console.error(`Could not get user: ${err}`);
+        return rejectWithValue(err);
+      })
   }
 )
 
 export const loginRequest = createAsyncThunk(
-  'auth/loginRequest',
-  async (form, {fulfillWithValue, rejectWithValue}) => {
-    try {
-      const res = await fetch (`${BASE_URL}/auth/login`,
-        {
-          method: 'POST',
-          mode: 'cors',
-          cache: 'no-cache',
-          credentials: 'same-origin',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: getCookie('refreshToken')
-          },
-          redirect: 'follow',
-          referrerPolicy: 'no-referrer',
-          body: JSON.stringify(form)
-        });
-      if (!res.ok) {
-        throw new Error(`HTTP error: ${res.status}`);
-      }
-      const data = await res.json();
-      saveCookie(data);
-      return fulfillWithValue(data.user);
-    }
-    catch (error) {
-      console.error(`Could not login: ${error.message}`);
-      return rejectWithValue(error)
-    }
+  'auth/loginRequest', (form, {fulfillWithValue, rejectWithValue}) => {
+    return loginAPI(`${BASE_URL}/auth/login`, form)
+      .then(data => {
+        saveCookie(data);
+        return fulfillWithValue(data.user);
+      })
+      .catch (err => {
+        console.error(`Could not login: ${err}`);
+        return rejectWithValue(err);
+      })
+  });
+
+
+export const logout = createAsyncThunk(
+  'auth/logout', (_, {rejectWithValue}) => {
+    return logoutAPI(`${BASE_URL}/auth/logout`)
+      .catch (err => {
+        console.error(`Could not logout: ${err}`);
+        return rejectWithValue(err);
+      })
+  }
+)
+
+export const registerRequest = createAsyncThunk(
+  'auth/registerRequest', (form, {fulfillWithValue, rejectWithValue}) => {
+    return registerRequestAPI(`${BASE_URL}/auth/register`, form)
+      .then (data => {
+        saveCookie(data);
+        return fulfillWithValue(data.user)
+      })
+      .catch (err => {
+        console.error(`Registration failed: ${err}`);
+        return rejectWithValue(err);
+      })
+  }
+)
+
+export const changeUserInfo = createAsyncThunk(
+  'auth/changeUserInfo', (form, {fulfillWithValue, rejectWithValue}) => {
+    return changeUserInfoAPI(`${BASE_URL}/auth/user`, form)
+      .then(data => {
+        return fulfillWithValue(data.user)
+      })
+      .catch (err => {
+        console.error(`Could not change user information: ${err}`);
+        return rejectWithValue(err);
+      })
   }
 )
 
 export const passwordChangeRequest = createAsyncThunk(
-  'auth/passwordChangeRequest',
-  async (email, {fulfillWithValue, rejectWithValue}) => {
-    try {
-      const res = await fetch (`${BASE_URL}/password-reset`,
-        {
-          method: 'POST',
-          mode: 'cors',
-          cache: 'no-cache',
-          credentials: 'same-origin',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          redirect: 'follow',
-          referrerPolicy: 'no-referrer',
-          body: JSON.stringify(email)
-        });
-      if (!res.ok) {
-        throw new Error(`HTTP error: ${res.status}`);
-      }
-      const data = await res.json();
-      return fulfillWithValue(data.success);
-    }
-    catch (error) {
-      console.error(`Could not send email for you: ${error}`);
-      return rejectWithValue(error)
-    }
+  'auth/passwordChangeRequest', (email, {rejectWithValue}) => {
+    return passwordChangeRequestAPI(`${BASE_URL}/password-reset`, email)
+      .catch (err => {
+        return rejectWithValue(`Could not request changing password: ${err}`);
+      })
   }
 )
 
 export const resetPassword = createAsyncThunk(
-  'auth/resetPassword',
-  async (form, {fulfillWithValue, rejectWithValue}) => {
-    try {
-      const res = await fetch (`${BASE_URL}/password-reset/reset`,
-        {
-          method: 'POST',
-          mode: 'cors',
-          cache: 'no-cache',
-          credentials: 'same-origin',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          redirect: 'follow',
-          referrerPolicy: 'no-referrer',
-          body: JSON.stringify(form)
-        });
-      if (!res.ok) {
-        throw new Error(`HTTP error: ${res.status}`);
-      }
-      const data = await res.json();
-      return fulfillWithValue(data.success);
-    }
-    catch (error) {
-      console.error(`Could not reset your password: ${error}`);
-      return rejectWithValue(error)
-    }
+  'auth/resetPassword', (password, {rejectWithValue}) => {
+    return resetPasswordAPI(`${BASE_URL}/password-reset/reset`, password)
+      .catch (err => {
+        return rejectWithValue(`Could not change password: ${err}`);
+      })
+
   }
 )
 
-/*const initialState = {
-  email: '',
-  password: '',
-  name: '',
-  requestError: false,
-  requestSucceed: false,
-  userIsAuthenticated: false,
-  loginRequested: false,
-  registrationRequested: false,
-  passwordChangeRequested: false,
-  resetPasswordRequested: false,
-  passwordChanged: false
-}*/
 
 const initialState = {
   userIsAuthenticated: false,
@@ -148,6 +106,11 @@ const initialState = {
   },
 
   requests: {
+    auth: {
+      userInfoRequested: false,
+      requestError: false,
+      requestSucceed: false,
+    },
     login: {
       loginRequested: false,
       requestError: false,
@@ -163,6 +126,13 @@ const initialState = {
       resetPasswordRequested: false,
       requestError: false,
       requestSucceed: false,
+      resetError: false,
+      resetSucceed: false,
+    },
+    userInfoChange: {
+      userInfoChangeRequested: false,
+      requestError: false,
+      requestSucceed: false,
     }
   }
 }
@@ -170,11 +140,6 @@ const initialState = {
 export const formSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {
-    editInput: (state, action) => {
-      state.userInfo[action.payload.name] = action.payload.value
-    }
-  },
   extraReducers: (builder) => {
     builder.addCase(registerRequest.pending, (state) => {
       state.requests.registration.registrationRequested = true
@@ -196,6 +161,7 @@ export const formSlice = createSlice({
       state.requests.login.loginRequested = true
     })
     builder.addCase(loginRequest.fulfilled, (state, action) => {
+
       state.userInfo.email = action.payload.email;
       state.userInfo.name = action.payload.name;
       state.userIsAuthenticated = true;
@@ -203,6 +169,7 @@ export const formSlice = createSlice({
       state.requests.login.requestSucceed = true;
     })
     builder.addCase(loginRequest.rejected, (state) => {
+      state.requests.login.loginRequested = false;
       state.requests.login.requestSucceed = false;
       state.requests.login.requestError = true;
       state.userInfo.email = initialState.email;
@@ -210,10 +177,14 @@ export const formSlice = createSlice({
     })
 
     builder.addCase(passwordChangeRequest.pending, (state) => {
-      state.requests.passwordChange.passwordChangeRequested = true
+      state.requests.passwordChange.passwordChangeRequested = true;
+      state.requests.passwordChange.requestSucceed = false;
+      state.requests.passwordChange.requestError = false;
+      state.requests.passwordChange.resetError = false;
+      state.requests.passwordChange.resetSucceed = false;
+
     })
     builder.addCase(passwordChangeRequest.fulfilled, (state) => {
-      state.requests.passwordChange.passwordChangeRequested = false;
       state.requests.passwordChange.requestSucceed = true;
     })
     builder.addCase(passwordChangeRequest.rejected, (state) => {
@@ -223,90 +194,57 @@ export const formSlice = createSlice({
     })
 
     builder.addCase(resetPassword.pending, (state) => {
-      state.requests.passwordChange.resetPasswordRequested = true
+      state.requests.passwordChange.resetPasswordRequested = true;
+      state.requests.passwordChange.resetSucceed = false;
     })
     builder.addCase(resetPassword.fulfilled, (state) => {
+      state.requests.passwordChange.passwordChangeRequested = false;
       state.requests.passwordChange.resetPasswordRequested = false;
-      state.requests.passwordChange.requestSucceed = true;
+      state.requests.passwordChange.resetSucceed = true;
     })
     builder.addCase(resetPassword.rejected, (state) => {
       state.requests.passwordChange.resetPasswordRequested = false;
-      state.requests.passwordChange.requestSucceed = false;
-      state.requests.passwordChange.requestError = true;
+      state.requests.passwordChange.resetSucceed = false;
+      state.requests.passwordChange.resetError = true;
+    })
+
+    builder.addCase(getUser.pending, (state) => {
+      state.requests.auth.userInfoRequested = true
+    })
+    builder.addCase(getUser.fulfilled, (state, action) => {
+      state.requests.auth.requestSucceed = true;
+      state.requests.auth.userInfoRequested = false;
+      state.userIsAuthenticated = true;
+      state.userInfo.email = action.payload.email;
+      state.userInfo.name = action.payload.name;
+    })
+    builder.addCase(getUser.rejected, (state) => {
+      state.requests.auth.requestError = true;
+      state.requests.auth.userInfoRequested = false;
+      state.userIsAuthenticated = false;
+    })
+
+    builder.addCase(changeUserInfo.pending, (state) => {
+      state.requests.userInfoChange.userInfoChangeRequested = true
+    })
+    builder.addCase(changeUserInfo.fulfilled, (state, action) => {
+      state.requests.userInfoChange.requestSucceed = true;
+      state.requests.userInfoChange.userInfoChangeRequested = false;
+      state.userInfo.email = action.payload.email;
+      state.userInfo.name = action.payload.name;
+
+    })
+    builder.addCase(changeUserInfo.rejected, (state) => {
+      state.requests.userInfoChange.requestError = true;
+      state.requests.userInfoChange.userInfoRequested = false;
+    })
+
+    builder.addCase(logout.fulfilled, (state) => {
+      state.userInfo.email = initialState.email;
+      state.userInfo.name = initialState.name;
+      state.userIsAuthenticated = false;
     })
   }
 })
 
-
-/*export const formSlice = createSlice({
-  name: 'auth',
-  initialState,
-  reducers: {
-    editInput: (state, action) => {
-      state[action.payload.name] = action.payload.value
-    }
-  },
-  extraReducers: (builder) => {
-    builder.addCase(registerRequest.pending, (state) => {
-      state.registrationRequested = true
-    })
-    builder.addCase(registerRequest.fulfilled, (state, action) => {
-      state.email = action.payload.email;
-      state.name = action.payload.name;
-      state.userIsAuthenticated = true;
-      state.registrationRequested = false;
-    })
-    builder.addCase(registerRequest.rejected, (state) => {
-      state.requestSucceed = false;
-      state.requestError = true;
-      state.email = initialState.email;
-      state.name = initialState.name
-    })
-
-    builder.addCase(loginRequest.pending, (state) => {
-      state.loginRequested = true
-    })
-    builder.addCase(loginRequest.fulfilled, (state, action) => {
-      state.email = action.payload.email;
-      state.name = action.payload.name;
-      state.userIsAuthenticated = true;
-      state.loginRequested = false;
-    })
-    builder.addCase(loginRequest.rejected, (state) => {
-      state.requestSucceed = false;
-      state.requestError = true;
-      state.email = initialState.email;
-      state.name = initialState.name
-    })
-
-    builder.addCase(passwordChangeRequest.pending, (state) => {
-      state.passwordChangeRequested = true
-    })
-    builder.addCase(passwordChangeRequest.fulfilled, (state, action) => {
-      state.passwordChangeRequested = false;
-      state.requestSucceed = action.payload;
-    })
-    builder.addCase(passwordChangeRequest.rejected, (state) => {
-      state.passwordChangeRequested = false;
-      state.requestSucceed = false;
-      state.requestError = true;
-    })
-
-    builder.addCase(resetPassword.pending, (state) => {
-      state.resetPasswordRequested = true
-    })
-    builder.addCase(resetPassword.fulfilled, (state, action) => {
-      state.resetPasswordRequested = false;
-      state.passwordChanged = true;
-      state.requestSucceed = action.payload;
-    })
-    builder.addCase(resetPassword.rejected, (state) => {
-      state.resetPasswordRequested = false;
-      state.requestSucceed = false;
-      state.requestError = true;
-    })
-  }
-})*/
-
-export const {editInput} = formSlice.actions
 export default formSlice.reducer;

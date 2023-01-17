@@ -11,7 +11,7 @@ const Header = () => {
       <div className={headerStyles.wrapper}>
         <nav className={headerStyles.menu}>
           <HeaderLink to="/" icon="burger">Конструктор</HeaderLink>
-          <HeaderLink to="/" icon="list">Лента заказов</HeaderLink>
+          <HeaderLink to="/feed" icon="list">Лента заказов</HeaderLink>
         </nav>
         <HeaderLink to="/profile" icon="profile">Личный кабинет</HeaderLink>
       </div>

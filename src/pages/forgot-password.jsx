@@ -1,22 +1,25 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useState} from 'react';
 import styles from './page.module.css';
-import {useSelector, useDispatch} from "react-redux";
+import { useDispatch} from "react-redux";
 import {Button, EmailInput} from "@ya.praktikum/react-developer-burger-ui-components";
-import {Link} from "react-router-dom";
-import {editInput, passwordChangeRequest} from "../services/reducers/auth";
+import {Link, useNavigate} from "react-router-dom";
+import {passwordChangeRequest} from "../services/reducers/auth";
 
 export const ForgotPasswordPage = () => {
 
-  const {email} = useSelector(store => store.user.userInfo);
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
   const dispatch = useDispatch();
+
   const onChange = e => {
-    dispatch(editInput({name: e.target.name, value: e.target.value}))
+    setEmail(e.target.value);
   };
 
   const handleRegister = useCallback(
     e => {
       e.preventDefault();
-      dispatch(passwordChangeRequest({"email": email}))
+      dispatch(passwordChangeRequest({"email": email}));
+      navigate("/reset-password");
     },
     [dispatch, email]
   );

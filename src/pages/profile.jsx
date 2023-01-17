@@ -1,69 +1,78 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {useSelector, useDispatch} from "react-redux";
 import styles from './profile.module.css';
-import {Input, EmailInput, PasswordInput} from "@ya.praktikum/react-developer-burger-ui-components";
-import {NavLink} from "react-router-dom";
-import {editInput} from "../services/reducers/auth";
+import {Input, EmailInput, PasswordInput, Button} from "@ya.praktikum/react-developer-burger-ui-components";
+import AsideMenu from "../components/aside-menu/aside-menu";
+import {changeUserInfo} from "../services/reducers/auth";
 
 export const ProfilePage = () => {
 
   const {name, email, password} = useSelector(store => store.user.userInfo);
+  const initialState = {
+    name: `${name}`,
+    email: `${email}`,
+    password: `${password}`
+  }
+  const [form, setValue] = useState(initialState);
+
+  useEffect(() => {
+    setValue(form)
+    }, [form, name, email, password])
+
+
+  const [isChanged, setChanging] = useState(false);
+
   const dispatch = useDispatch();
   const onChange = e => {
-    dispatch(editInput({name: e.target.name, value: e.target.value}))
+    setValue({ ...form, [e.target.name]: e.target.value });
+    setChanging(true);
   };
 
-  const profileLinkActive = `${styles.link} text text_type_main-medium`
-  const profileLinkInactive = `${styles.link} text text_type_main-medium text_color_inactive`
+  const handleUpdateUserInfo = () => {
+    dispatch(changeUserInfo(form))
+    setChanging(false);
+  }
+
+  const handleResetUserInfo = () => {
+    setValue(initialState)
+    setChanging(false);
+  }
 
   return (
     <main className={styles.wrapper}>
-      <aside className={styles.aside}>
-        <NavLink
-          to="/profile"
-          className={({ isActive }) =>
-            isActive ? profileLinkActive : profileLinkInactive}
-        >
-          Профиль
-        </NavLink>
-        <NavLink
-          to="/history"
-          className={({ isActive }) =>
-            isActive ? profileLinkActive : profileLinkInactive}
-        >
-          История заказов
-        </NavLink>
-        <NavLink
-          to="/"
-          className={({ isActive }) =>
-            isActive ? profileLinkActive : profileLinkInactive}
-        >
-          Выход
-        </NavLink>
-        <p className="text text_type_main-small text_color_inactive">
-          В этом разделе вы можете изменить свои персональные данные
-        </p>
-      </aside>
+      <AsideMenu/>
       <form className={styles.form}>
         <Input
-          placeholder={'Имя'}
+          placeholder='Имя'
           onChange={onChange}
-          value={name}
-          name={'name'}
+          value={form.name}
+          name='name'
           icon='EditIcon'
         />
         <EmailInput
           onChange={onChange}
-          value={email}
-          name={'email'}
+          value={form.email}
+          name='email'
           icon='EditIcon'
         />
         <PasswordInput
+          type='password'
           onChange={onChange}
-          value={password}
-          name={'password'}
+          value={form.password}
+          name='password'
           icon='EditIcon'
+          size='default'
+          disabled={false}
         />
+        {isChanged &&
+          <div className={styles.buttons}>
+            <Button onClick={handleResetUserInfo} htmlType="button" type="secondary" size="medium">
+              Отмена
+            </Button>
+            <Button onClick={handleUpdateUserInfo} htmlType="button" type="primary" size="medium">
+              Сохранить
+            </Button>
+          </div>}
       </form>
     </main>
   );

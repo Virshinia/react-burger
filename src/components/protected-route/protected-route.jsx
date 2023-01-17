@@ -1,10 +1,18 @@
-import { Navigate } from 'react-router-dom';
+import React from 'react';
+import { Navigate, useLocation} from 'react-router-dom';
 import {useSelector} from "react-redux";
 
-export function ProtectedRouteElement({ element, to }) {
-  //Get user
+export function ProtectedRoute({forAuth, element}) {
+
+  const location = useLocation();
   const {userIsAuthenticated} = useSelector(store => store.user);
-  return (
-    userIsAuthenticated ? element : (<Navigate to={to}/>)
-  );
+  const { url } = location.state || {url: { pathname: "/"}};
+
+  if ((forAuth && !userIsAuthenticated)) {
+    return <Navigate to="/login" state={{url: location.pathname}}/>
+  }
+  if ((!forAuth && userIsAuthenticated)) {
+    return <Navigate to={url}/>
+  }
+  return element
 }
