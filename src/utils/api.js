@@ -1,4 +1,4 @@
-import {getCookie} from "./cookies";
+import {getCookie, saveCookie} from "./cookies";
 import {BASE_URL} from "./constatants";
 
 function checkResponse(res) {
@@ -69,6 +69,9 @@ const getUserAPI = (baseUrl) => {
       return res.json();
     } else if (res.status === 403)  {
       return refreshTokenAPI(`${BASE_URL}/auth/token`)
+        .then(data => {
+          return getUserAPI(baseUrl)
+      })
     }});
 }
 
@@ -88,14 +91,22 @@ const registerRequestAPI = (baseUrl, form) => {
 }
 
 const changeUserInfoAPI = (baseUrl, form) => {
-  return request(baseUrl, {
+  return fetch(baseUrl, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' +  getCookie('accessToken')
     },
     body: JSON.stringify(form)
-  })
+  }).then(res => {
+    if (res.ok) {
+      return res.json();
+    } else if (res.status === 403)  {
+      return refreshTokenAPI(`${BASE_URL}/auth/token`)
+        .then(data => {
+          return changeUserInfoAPI(baseUrl, form)
+        })
+    }});
 }
 
 const passwordChangeRequestAPI = (baseUrl, email) => {
@@ -134,8 +145,10 @@ const refreshTokenAPI = (baseUrl) => {
     },
     body: JSON.stringify({"token": getCookie('refreshToken')}),
   })
+    .then (data => {
+      return saveCookie(data)
+    })
 }
-
 
 
 
