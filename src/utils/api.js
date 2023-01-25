@@ -12,6 +12,17 @@ function request(url, options) {
   return fetch(url, options).then(checkResponse)
 }
 
+function requestWithTokenCheck(url, options, func, data) {
+  return fetch(url, options)
+    .then(res => {
+      if (res.ok) {
+        return res.json();
+      } else if (res.status === 403)  {
+        return refreshTokenAPI(`${BASE_URL}/auth/token`)
+          .then(func(url, data))
+      }})
+}
+
 
 const getIngredientsAPI = (baseUrl) => {
   return request(baseUrl)
@@ -58,21 +69,13 @@ const logoutAPI = (baseUrl) => {
 }
 
 const getUserAPI = (baseUrl) => {
-  return fetch(baseUrl, {
+  return requestWithTokenCheck(baseUrl, {
     method: "GET",
     headers: {
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' +  getCookie('accessToken')
     }
-  }).then(res => {
-    if (res.ok) {
-      return res.json();
-    } else if (res.status === 403)  {
-      return refreshTokenAPI(`${BASE_URL}/auth/token`)
-        .then(data => {
-          return getUserAPI(baseUrl)
-      })
-    }});
+  }, getUserAPI);
 }
 
 const registerRequestAPI = (baseUrl, form) => {
@@ -91,22 +94,14 @@ const registerRequestAPI = (baseUrl, form) => {
 }
 
 const changeUserInfoAPI = (baseUrl, form) => {
-  return fetch(baseUrl, {
+  return requestWithTokenCheck(baseUrl, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' +  getCookie('accessToken')
     },
     body: JSON.stringify(form)
-  }).then(res => {
-    if (res.ok) {
-      return res.json();
-    } else if (res.status === 403)  {
-      return refreshTokenAPI(`${BASE_URL}/auth/token`)
-        .then(data => {
-          return changeUserInfoAPI(baseUrl, form)
-        })
-    }});
+  }, changeUserInfoAPI, form);
 }
 
 const passwordChangeRequestAPI = (baseUrl, email) => {
