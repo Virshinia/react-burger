@@ -16,17 +16,21 @@ import {
   NotFoundPage,
   OrderHistoryPage
 } from "../../pages"
+import {getCookie} from "../../utils/cookies";
 
 const App = () => {
   const dispatch = useDispatch();
+  const refreshToken = getCookie('refreshToken');
 
   useEffect(() => {
     dispatch(getIngredients());
     }, [dispatch])
 
   useEffect(() => {
-    dispatch(getUser());
-  }, [dispatch])
+    if (refreshToken) {
+      dispatch(getUser());
+    }
+  }, [dispatch, refreshToken])
 
   return (
     <>

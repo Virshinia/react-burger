@@ -19,7 +19,7 @@ function requestWithTokenCheck(url, options, func, data) {
         return res.json();
       } else if (res.status === 403)  {
         return refreshTokenAPI(`${BASE_URL}/auth/token`)
-          .then(func(url, data))
+          .then(res => {func(url, data)})
       }})
 }
 

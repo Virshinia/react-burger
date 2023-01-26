@@ -16,6 +16,8 @@ export const isBun = (item) => {
   return item.type === BUN
 }
 
+export const checkUser = store => store.user.userIsAuthenticated;
+
 export const ingredientPropTypes = {
   _id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,

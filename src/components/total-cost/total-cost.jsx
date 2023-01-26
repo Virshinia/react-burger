@@ -6,15 +6,17 @@ import Modal from "../modal/modal";
 import OrderDetails from "../order-details/order-details";
 import Loader from "../loader/loader";
 import totalCostStyle from "./total-cost.module.css";
-import { ingredientPropTypes } from "../../utils/constatants";
+import { ingredientPropTypes, checkUser } from "../../utils/constatants";
 import {clearAllIngredients, getIngredientsForOder, postOrder} from "../../services/reducers/burger-constructor";
 import OrderError from "../order-error/order-error";
 
 
 const TotalCost = ({others, bun}) => {
   const dispatch = useDispatch();
-  const error = useSelector(store => store.burgerConstructor.postOrderError);
-  const {userIsAuthenticated} = useSelector(store => store.user);
+  const checkError = store => store.burgerConstructor.postOrderError;
+
+  const error = useSelector(checkError);
+  const userIsAuthenticated = useSelector(checkUser);
 
   const sumOfPrice = () => {
     return others.reduce((total, item) => total + item.price, 0) + bun.price*2;
