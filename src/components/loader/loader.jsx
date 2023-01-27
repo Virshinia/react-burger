@@ -1,13 +1,18 @@
 import React from 'react';
 import LoaderStyle from "./loader.module.css";
+import PropTypes from "prop-types";
 
-const Loader = () => {
+const Loader = ({text}) => {
   return (
     <div className={LoaderStyle.wrapper}>
       <span className={LoaderStyle.loader}></span>
-      <p className="text text_type_main-default text_color_primary mt-8">Мы обрабатываем ваш заказ...</p>
+      {text && <p className="text text_type_main-default text_color_primary mt-8">{text}</p>}
     </div>
   )
 }
 
 export default Loader
+
+Loader.propTypes = {
+  text: PropTypes.string
+};
