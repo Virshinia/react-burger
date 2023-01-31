@@ -1,0 +1,26 @@
+.board {
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+  height: 80vh;
+  padding: 0;
+}
+
+.wrapper {
+  display: flex;
+  justify-content: space-between;
+  gap: 36px;
+}
+
+.list{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.shadow {
+  text-shadow: 0 0 16px rgba(51, 51, 255, 0.25), 0 0 8px rgba(51, 51, 255, 0.25), 0 4px 32px rgba(51, 51, 255, 0.5);
+}

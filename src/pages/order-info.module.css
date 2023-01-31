@@ -1,0 +1,34 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  padding-top: 122px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.number {
+  align-self: center;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-height: 312px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 24px 0 40px;
+}
+
+.ingredient {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: 64px 1fr 1fr;
+  align-items: center;
+}
+
+.info {
+  display: flex;
+  justify-content: space-between;
+}
