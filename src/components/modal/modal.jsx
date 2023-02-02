@@ -36,7 +36,10 @@ const Modal = ({title, children, closeModal}) => {
 }
 
 Modal.propTypes = {
-  title: PropTypes.string,
+  title: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
   children: PropTypes.any.isRequired,
   closeModal: PropTypes.func.isRequired
 };

@@ -8,13 +8,17 @@
 
 .wrapper {
   display: flex;
-  justify-content: space-between;
   gap: 36px;
 }
 
-.list{
-  display: flex;
-  flex-direction: column;
+.list {
+  display: grid;
+  min-width: 272px;
+  max-width: 272px;
+  overflow-y: hidden;
+  grid-auto-flow: column;
+  grid-template-columns: repeat(5, min-content);
+  grid-template-rows: repeat(10, 1fr);
   gap: 8px;
   list-style-type: none;
   margin: 0;

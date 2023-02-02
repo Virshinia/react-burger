@@ -17,3 +17,15 @@
   background-position: center;
   background-size: cover;
 }
+
+.last {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  position: absolute;
+  background: rgba(28, 28, 33, .6);
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  border-radius: 100px;
+}

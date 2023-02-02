@@ -1,0 +1,26 @@
+.number {
+  align-self: center;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-height: 312px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+}
+
+.ingredient {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: 64px 1fr 1fr;
+  align-items: center;
+  margin-right: 24px;
+}
+
+.info {
+  display: flex;
+  justify-content: space-between;
+}

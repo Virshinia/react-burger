@@ -44,8 +44,8 @@ const App = () => {
           <Route path="orders/:id" element={<ProtectedRoute forAuth={true} element={<OrderInfoPage/>}/>}/>
         </Route>
         <Route path="/feed" >
-          <Route index element={<ProtectedRoute forAuth={true} element={<OrdersPage/>}/>} />
-          <Route path=":id" element={<ProtectedRoute forAuth={true} element={<OrderInfoPage/>}/>}/>
+          <Route index element={<OrdersPage/>}/>
+          <Route path=":id" element={<OrderInfoPage/>}/>
         </Route>
         <Route path="/login" element={<ProtectedRoute forAuth={false} element={<LoginPage/>}/>}/>
         <Route path="/registration" element={<ProtectedRoute forAuth={false} element={<RegistrationPage/>} />} />

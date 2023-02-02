@@ -2,7 +2,6 @@
   display: flex;
   flex-flow: column;
   position: relative;
-  gap: 24px;
   background-color: #1C1C21;
   padding: 24px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.04), 0 0 2px rgba(0, 0, 0, 0.06), 0 0 1px rgba(0, 0, 0, 0.04);
@@ -20,7 +19,7 @@
 .info {
   display: flex;
   justify-content: space-between;
-  gap: 24px;
+  align-items: center;
 }
 
 .ingredients {
@@ -31,4 +30,8 @@
 
 .ingredient {
   margin-right: -16px;
+}
+
+.hidden {
+  display: none;
 }

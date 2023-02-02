@@ -11,13 +11,21 @@ import {tabSlice} from "./services/reducers/tab-section";
 import {ingredientsSlice} from "./services/reducers/burger-ingredients";
 import {constructorSlice} from "./services/reducers/burger-constructor";
 import {formSlice} from "./services/reducers/auth";
+import {ordersSlice} from "./services/reducers/websocket";
+import {wsInit, startConnection, endConnection, getOrders} from "./services/reducers/websocket";
+import {socketMiddleware} from "./services/middleware/socketMiddleware";
+const webSocketMiddleWare = socketMiddleware({wsInit, onOpen: startConnection, onClose: endConnection, onMessage: getOrders});
 
 const store = configureStore({
   reducer: {
     ingredients: ingredientsSlice.reducer,
     burgerConstructor: constructorSlice.reducer,
     tab: tabSlice.reducer,
-    user: formSlice.reducer
+    user: formSlice.reducer,
+    orders: ordersSlice.reducer
+  },
+  middleware: (getDefaultMiddleware) => {
+    return getDefaultMiddleware().concat(webSocketMiddleWare)
   }
 });
 
