@@ -14,7 +14,7 @@ export const OrderHistoryPage = () => {
 
   useEffect(() => {
     dispatch(wsInit({
-      url: `${WS_ORDERS}/orders?token=${token}`
+      url: `${WS_ORDERS}?token=${token}`
     }));
     return () => {
       dispatch(endConnection())
