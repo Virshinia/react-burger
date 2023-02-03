@@ -24,6 +24,8 @@ export const ordersSlice = createSlice({
       state.wsConnected = false;
       state.wsInit = false;
       state.orders = [];
+      state.total = 0;
+      state.totalToday = 0;
     },
     getOrders: (state, action) => {
       state.orders = action.payload.orders;

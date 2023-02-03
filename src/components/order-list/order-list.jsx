@@ -55,7 +55,7 @@ const OrderList = ({myOrder}) => {
 }
 
 OrderList.propTypes ={
-  myOrder: PropTypes.string
+  myOrder: PropTypes.bool
 }
 
 export default OrderList
