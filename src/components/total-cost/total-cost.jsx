@@ -28,7 +28,7 @@ const TotalCost = ({others, bun}) => {
 
   useEffect(() => {
     setTotalPrice(sumOfPrice)
-    dispatch((getIngredientsForOder([bun._id, ...others.map((item) => item._id)])))
+    dispatch((getIngredientsForOder([bun._id, ...others.map((item) => item._id), bun._id])))
   }, [others, bun, dispatch])
 
   const {ingredientsForOrder, orderId} = useSelector(store => store.burgerConstructor)

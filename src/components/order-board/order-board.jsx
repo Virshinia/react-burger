@@ -10,7 +10,7 @@ const OrderBoard = () => {
   const inProgress = orders.filter((order) => order.status !== "done");
 
   const renderOrderNumbers = (ordersArr) => {
-    return ordersArr.map(order => {
+    return ordersArr.slice(0,20).map(order => {
       return <li key={order.number} className={`text text_type_digits-default ${(order.status === 'done') ? 'text_color_success': ''}`}>{order.number}</li>
     })
   }

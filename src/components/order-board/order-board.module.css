@@ -15,7 +15,6 @@
   display: grid;
   min-width: 272px;
   max-width: 272px;
-  overflow-y: hidden;
   grid-auto-flow: column;
   grid-template-columns: repeat(5, min-content);
   grid-template-rows: repeat(10, 1fr);

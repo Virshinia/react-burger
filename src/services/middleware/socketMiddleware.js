@@ -1,5 +1,4 @@
-import {getCookie} from "../../utils/cookies";
-import { wsInit, startConnection, closeConnection, getOrders} from "../reducers/websocket";
+import { wsInit, startConnection, endConnection, getOrders} from "../reducers/websocket";
 
 
 export const socketMiddleware = (wsActions) => {
@@ -7,13 +6,11 @@ export const socketMiddleware = (wsActions) => {
     let socket = null;
     return next => action => {
 
-      const token = getCookie("accessToken");
       const { dispatch } = store;
       const { payload } = action;
 
-
       if (wsInit.match(action)) {
-        const wsUrl = payload.userIsAuthenticated ? payload.url + `?token=${token}` : payload.url;
+        const wsUrl = payload.url;
         socket = new WebSocket(wsUrl);
 
       }
@@ -30,13 +27,16 @@ export const socketMiddleware = (wsActions) => {
         };
 
         socket.onerror = event => {
-          dispatch(closeConnection());
+          dispatch(endConnection(event.code));
         };
 
         socket.onclose = event => {
-          socket.close('1000', 'socket close');
-          dispatch(closeConnection());
+          dispatch(endConnection(event.code));
         };
+
+        if (endConnection.match(action)) {
+          socket.close(1000, 'Connection is closed');
+        }
 
       }
 

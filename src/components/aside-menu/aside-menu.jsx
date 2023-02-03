@@ -19,6 +19,7 @@ const AsideMenu = () => {
   return (
     <aside className={styles.aside}>
       <NavLink
+        end
         to="/profile"
         className={({ isActive }) =>
           isActive ? profileLinkActive : profileLinkInactive}

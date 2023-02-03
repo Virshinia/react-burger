@@ -5,7 +5,7 @@ const initialState = {
   wsConnected: false,
   error: '',
   orders: [],
-  currentOrder: {},
+  currentOrder: null,
   total: 0,
   totalToday: 0
 }
@@ -41,5 +41,5 @@ export const ordersSlice = createSlice({
   }
 })
 
-export const { wsInit, startConnection, endConnection, closeConnection, getOrders, showOrderInfoDetails, clearOrderInfoDetails } = ordersSlice.actions
+export const { wsInit, startConnection, endConnection, getOrders, showOrderInfoDetails, clearOrderInfoDetails } = ordersSlice.actions
 export default ordersSlice.reducer;

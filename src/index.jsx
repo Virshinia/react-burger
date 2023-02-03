@@ -14,7 +14,7 @@ import {formSlice} from "./services/reducers/auth";
 import {ordersSlice} from "./services/reducers/websocket";
 import {wsInit, startConnection, endConnection, getOrders} from "./services/reducers/websocket";
 import {socketMiddleware} from "./services/middleware/socketMiddleware";
-const webSocketMiddleWare = socketMiddleware({wsInit, onOpen: startConnection, onClose: endConnection, onMessage: getOrders});
+const webSocketMiddleWare = socketMiddleware({wsInit, startConnection, endConnection, getOrders});
 
 const store = configureStore({
   reducer: {
