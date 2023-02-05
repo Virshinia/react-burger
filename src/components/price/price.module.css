@@ -1,0 +1,6 @@
+.price {
+  display: flex;
+  gap: 9px;
+  justify-content: center;
+  justify-self: end;
+}

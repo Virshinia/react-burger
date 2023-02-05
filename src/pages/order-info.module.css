@@ -1,0 +1,12 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  padding-top: 122px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.number {
+  align-self: center;
+}

@@ -33,7 +33,8 @@ const postOrderAPI = (baseUrl, orderedIngredients) => {
     method: "POST",
     headers: {
       'Accept': 'application/json',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' +  getCookie('accessToken')
     },
     body: JSON.stringify({
       "ingredients": orderedIngredients

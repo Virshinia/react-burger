@@ -1,4 +1,3 @@
-
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import {BASE_URL} from "../../utils/constatants";
 import {saveCookie} from "../../utils/cookies"

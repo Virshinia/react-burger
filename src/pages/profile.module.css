@@ -1,7 +1,8 @@
 .wrapper {
   max-width: 1280px;
   margin: 0 auto;
-  display: flex;
+  display: grid;
+  grid-template-columns: 320px 1fr;
   padding-top: 120px;
   gap: 60px;
 }
@@ -9,7 +10,6 @@
 .form {
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 24px;
   margin-bottom: 80px;
 }
@@ -17,4 +17,3 @@
 .buttons {
   align-self: flex-end;
 }
-

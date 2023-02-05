@@ -1,22 +1,22 @@
 .title {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
-.ingredients{
-    height: 80vh;
-    overflow-y: auto;
-    margin: 40px 0;
-
+.ingredients {
+  height: 80vh;
+  overflow-y: auto;
+  margin: 40px 0;
 }
+
 .ingredients::-webkit-scrollbar-track {
-    margin-bottom: 52px;
+  margin-bottom: 52px;
 }
 
 .category {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    column-gap: 24px;
-    row-gap: 32px;
-    margin: 24px 16px 40px;
-    padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 24px;
+  row-gap: 32px;
+  margin: 24px 16px 40px;
+  padding: 0;
 }

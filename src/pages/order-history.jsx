@@ -1,16 +1,30 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import styles from './profile.module.css';
+import { useDispatch } from "react-redux";
 import AsideMenu from "../components/aside-menu/aside-menu";
+import OrderList from "../components/order-list/order-list";
+import {endConnection, wsInit} from "../services/reducers/websocket";
+import {WS_ORDERS} from "../utils/constatants";
+import {getCookie} from "../utils/cookies";
 
 export const OrderHistoryPage = () => {
+
+  const dispatch = useDispatch();
+  const token = getCookie("accessToken");
+
+  useEffect(() => {
+    dispatch(wsInit({
+      url: `${WS_ORDERS}?token=${token}`
+    }));
+    return () => {
+      dispatch(endConnection())
+    };
+  }, [dispatch, token]);
 
   return (
     <main className={styles.wrapper}>
       <AsideMenu/>
-      <h1 className="text text_type_main-medium text_color_primary">История заказов</h1>
-      <p className="text text_type_main-default text_color_inactive mt-8 mb-8">
-        Страница в разработке
-      </p>
+      <OrderList myOrder={true}/>
     </main>
   );
 }

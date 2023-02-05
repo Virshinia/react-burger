@@ -14,7 +14,9 @@ import {
   ProfilePage,
   IngredientPage,
   NotFoundPage,
-  OrderHistoryPage
+  OrderHistoryPage,
+  OrdersPage,
+  OrderInfoPage
 } from "../../pages"
 import {getCookie} from "../../utils/cookies";
 
@@ -39,6 +41,11 @@ const App = () => {
         <Route path="/profile" >
           <Route index element={<ProtectedRoute forAuth={true} element={<ProfilePage/>}/>} />
           <Route path="orders" element={<ProtectedRoute forAuth={true} element={<OrderHistoryPage/>}/>}/>
+          <Route path="orders/:id" element={<ProtectedRoute forAuth={true} element={<OrderInfoPage/>}/>}/>
+        </Route>
+        <Route path="/feed" >
+          <Route index element={<OrdersPage/>}/>
+          <Route path=":id" element={<OrderInfoPage/>}/>
         </Route>
         <Route path="/login" element={<ProtectedRoute forAuth={false} element={<LoginPage/>}/>}/>
         <Route path="/registration" element={<ProtectedRoute forAuth={false} element={<RegistrationPage/>} />} />
