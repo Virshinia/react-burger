@@ -19,7 +19,7 @@ export const OrderHistoryPage = () => {
     return () => {
       dispatch(endConnection())
     };
-  }, [dispatch]);
+  }, [dispatch, token]);
 
   return (
     <main className={styles.wrapper}>

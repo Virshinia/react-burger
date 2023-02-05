@@ -36,7 +36,7 @@ export const ordersSlice = createSlice({
       state.currentOrder = action.payload
     },
     clearOrderInfoDetails: (state) => {
-      state.currentOrder = {};
+      state.currentOrder = null;
     }
   }
 })
