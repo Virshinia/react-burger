@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import style from './order-board.module.css'
 import {useSelector} from "react-redux";
 
@@ -6,8 +6,11 @@ const OrderBoard = () => {
 
   const {total, totalToday, orders} = useSelector(store => store.orders);
 
-  const done = orders.filter((order) => order.status === "done");
-  const inProgress = orders.filter((order) => order.status !== "done");
+  const {done, inProgress} = useMemo(() => {
+    const done = orders.filter((order) => order.status === "done");
+    const inProgress = orders.filter((order) => order.status !== "done");
+    return {done, inProgress}
+  },[orders])
 
   const renderOrderNumbers = (ordersArr) => {
     return ordersArr.slice(0,20).map(order => {
