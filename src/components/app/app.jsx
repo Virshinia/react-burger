@@ -1,10 +1,10 @@
-import React, {useEffect} from 'react';
-import {Route, Routes} from "react-router-dom"
+import React, { useEffect } from 'react';
+import { Route, Routes } from "react-router-dom"
 import Header from '../header/header'
 import { getIngredients } from '../../services/reducers/burger-ingredients'
 import { getUser } from "../../services/reducers/auth";
 import { useDispatch } from "react-redux";
-import {ProtectedRoute} from "../protected-route/protected-route";
+import { ProtectedRoute } from "../protected-route/protected-route";
 import {
   HomePage,
   LoginPage,

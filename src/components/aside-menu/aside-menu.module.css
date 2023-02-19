@@ -10,6 +10,7 @@
   min-height: 64px;
   transition: ease-out .3s;
 }
+
 .active {
   color: var(--text-primary-color);
 }
