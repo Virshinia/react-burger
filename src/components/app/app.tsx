@@ -3,7 +3,7 @@ import { Route, Routes } from "react-router-dom"
 import Header from '../header/header'
 import { getIngredients } from '../../services/reducers/burger-ingredients'
 import { getUser } from "../../services/reducers/auth";
-import { useDispatch } from "react-redux";
+import { useAppDispatch} from "../../utils/hooks";
 import { ProtectedRoute } from "../protected-route/protected-route";
 import {
   HomePage,
@@ -21,7 +21,7 @@ import {
 import {getCookie} from "../../utils/cookies";
 
 const App = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const refreshToken = getCookie('refreshToken');
 
   useEffect(() => {

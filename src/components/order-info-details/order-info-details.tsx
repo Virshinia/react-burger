@@ -42,7 +42,6 @@ export const OrderInfoDetails:FC<{currentOrder:IOrder}> = ({currentOrder}) => {
       return Array.from(map, ([ingredient, qty]) => ({ ingredient, qty }));
     }}, [checkedIngredients])
 
-  console.log(checkedIngredients);
 
   return (
     <>

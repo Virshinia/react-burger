@@ -1,40 +1,30 @@
-import React, {useState, useEffect} from 'react';
-import {useAppDispatch, useAppSelector} from "../utils/hooks";
+import React, {useState, ChangeEvent} from 'react';
+import {useAppDispatch, useAppSelector, useForm} from "../utils/hooks";
 import styles from './profile.module.css';
 import {Input, PasswordInput, Button} from "@ya.praktikum/react-developer-burger-ui-components";
 import AsideMenu from "../components/aside-menu/aside-menu";
 import {changeUserInfo} from "../services/reducers/auth";
+import {IPersonalInformationForm} from "../utils/common-interfaces";
 
 export const ProfilePage = () => {
 
-  const {name, email, password} = useAppSelector(store => store.user.userInfo);
-  const initialState = {
-    name: `${name}`,
-    email: `${email}`,
-    password: `${password}`
-  }
-  const [form, setValue] = useState(initialState);
-
-  useEffect(() => {
-    setValue(form)
-    }, [form, name, email, password])
-
-
+  const {userInfo} = useAppSelector(store => store.user);
   const [isChanged, setChanging] = useState(false);
+  const {values, handleChange, setValues } = useForm<IPersonalInformationForm>(userInfo);
+
+  const onClick = (event: ChangeEvent<HTMLInputElement>) => {
+    handleChange(event);
+    setChanging(true);
+  }
 
   const dispatch = useAppDispatch();
-  const onChange: React.ChangeEventHandler<HTMLInputElement>  = e => {
-    setValue({ ...form, [e.target.name]: e.target.value });
-    setChanging(true);
-  };
-
   const handleUpdateUserInfo = () => {
-    dispatch(changeUserInfo(form))
+    dispatch(changeUserInfo(values))
     setChanging(false);
   }
 
   const handleResetUserInfo = () => {
-    setValue(initialState)
+    setValues(userInfo);
     setChanging(false);
   }
 
@@ -44,20 +34,20 @@ export const ProfilePage = () => {
       <form className={styles.form}>
         <Input
           placeholder='Имя'
-          onChange={onChange}
-          value={form.name}
+          onChange={onClick}
+          value={values.name}
           name='name'
           icon='EditIcon'
         />
         <Input
-          onChange={onChange}
-          value={form.email}
+          onChange={onClick}
+          value={values.email}
           name='email'
           icon='EditIcon'
         />
         <PasswordInput
-          onChange={onChange}
-          value={form.password}
+          onChange={onClick}
+          value={values.password}
           name='password'
           icon='EditIcon'
           size='default'

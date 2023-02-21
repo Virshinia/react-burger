@@ -1,7 +1,7 @@
-import {RootState} from "../index";
+import {RootState} from "../services/store";
 import {IIngredientPropTypes} from "./common-interfaces";
 
-export const BASE_URL = 'https://norma.nomoreparties.space/api';
+export const BASE_URL = 'https://norma.nomoreparties.space/api/';
 export const WS_ORDERS = 'wss://norma.nomoreparties.space/orders';
 
 export const BUN = 'bun'

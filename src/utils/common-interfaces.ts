@@ -22,10 +22,6 @@ export interface IUser {
   readonly name: string;
 }
 
-export type TIngredients = {
-  readonly data: Array<IIngredientPropTypes>
-}
-
 export interface IPersonalInformationForm  {
   name: string;
   email: string;

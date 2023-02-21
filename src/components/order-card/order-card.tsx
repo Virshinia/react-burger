@@ -5,7 +5,6 @@ import Price from "../price/price";
 import { FormattedDate } from '@ya.praktikum/react-developer-burger-ui-components'
 import CircleIcon from "../circle-icon/circle-icon";
 import {IOrder} from "../../services/reducers/websocket";
-import { v4 as uuid } from 'uuid';
 
 interface IOrderCard {
   data: IOrder;
@@ -55,7 +54,7 @@ const OrderCard:FC<IOrderCard> = ({data, openDetails, myOrder}) => {
           {ingredients.map((item, index) => {
             if (item) {
               return (
-                <li key={uuid()} className={`${style.ingredient} ${index > 4 ? `${style.hidden}` : ''}`}>
+                <li key={item._id + index} className={`${style.ingredient} ${index > 4 ? `${style.hidden}` : ''}`}>
                   <CircleIcon qty={extraIngredients(index, ingredients.length)} img={item.image_mobile}/>
                 </li>)
             }

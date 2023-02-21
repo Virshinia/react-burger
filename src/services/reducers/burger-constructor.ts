@@ -1,4 +1,3 @@
-import {BASE_URL} from "../../utils/constatants";
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {postOrderAPI} from "../../utils/api";
 import {IIngredientPropTypes} from "../../utils/common-interfaces";
@@ -26,10 +25,7 @@ const initialState: IConstructorState = {
 
 export const postOrder = createAsyncThunk(
   'constructor/postOrder', (ids: string[]) => {
-    return postOrderAPI(`${BASE_URL}/orders`, ids)
-      .catch(err => {
-        console.error(`Could not post order: ${err}`);
-      })
+    return postOrderAPI(`orders`, ids)
   }
 )
 
@@ -70,10 +66,11 @@ export const constructorSlice = createSlice({
       state.postOrderSucceed = true;
       state.postOrderRequested = false;
     })
-    builder.addCase(postOrder.rejected, (state) => {
+    builder.addCase(postOrder.rejected, (state, action) => {
       state.postOrderRequested = false;
       state.postOrderSucceed = false;
       state.postOrderError = true;
+      console.log(`Couldn't post order: ${action.error.message}`)
     })
   }
 })

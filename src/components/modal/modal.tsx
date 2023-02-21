@@ -8,7 +8,7 @@ const modalRoot = document.getElementById("modals")!;
 
 interface IModal {
   title?: string | number;
-  children: any;
+  children: React.ReactNode;
   closeModal: () => void;
 }
 

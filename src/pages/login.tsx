@@ -1,53 +1,50 @@
 import React, {useState, useCallback, useEffect} from 'react';
-import {useAppSelector, useAppDispatch} from "../utils/hooks";
+import {useAppSelector, useAppDispatch, useForm} from "../utils/hooks";
 import styles from './page.module.css';
 import {Link} from "react-router-dom";
 import {Button, EmailInput, PasswordInput} from "@ya.praktikum/react-developer-burger-ui-components";
 import {loginRequest} from "../services/reducers/auth";
+import {TLoginForm} from "../utils/common-interfaces";
 
 export const LoginPage = () => {
 
   const dispatch = useAppDispatch();
   const { requestError } = useAppSelector(store => store.user.requests.login)
-  const [form, setValue] = useState({email: '', password: ''});
   const [error, setVisibility] = useState(false);
+  const {values, handleChange } = useForm<TLoginForm>({email: '', password: ''});
 
-  const onChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    setValue({ ...form, [e.target.name]: e.target.value });
-  };
-
-  useEffect(()=>{
+  useEffect(() => {
     setVisibility(requestError)
   }, [requestError, setVisibility])
 
   const handleLogin = useCallback(
-    (e: React.SyntheticEvent) => {
+    (e: React.FormEvent) => {
       e.preventDefault();
-      dispatch(loginRequest(form));
+      console.log("go2")
+      dispatch(loginRequest(values));
     },
-    [form]
+    [values]
   );
-
 
   return (
      <main className={styles.wrapper}>
-      <form className={styles.form}>
+      <form className={styles.form} onSubmit={handleLogin}>
         <h1 className="text text_type_main-medium text_color_primary">Вход</h1>
         <EmailInput
-          onChange={onChange}
-          value={form.email}
+          onChange={handleChange}
+          value={values.email}
           name={'email'}
           isIcon={false}
         />
         <PasswordInput
-          onChange={onChange}
-          value={form.password}
+          onChange={handleChange}
+          value={values.password}
           name={'password'}
         />
         { error && <p className="text text_type_main-default mb-4">
           Неверный email или пароль
         </p>}
-        <Button onClick={handleLogin} htmlType="button" type="primary" size="medium">
+        <Button htmlType="submit" type="primary" size="medium">
           Войти
         </Button>
       </form>

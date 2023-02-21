@@ -1,5 +1,4 @@
 import { createSlice,  createAsyncThunk } from '@reduxjs/toolkit'
-import {BASE_URL} from "../../utils/constatants";
 import {getIngredientsAPI} from "../../utils/api";
 import {IIngredientPropTypes, TIngredientDetails} from "../../utils/common-interfaces";
 
@@ -13,10 +12,7 @@ interface IIngredientsState {
 
 export const getIngredients = createAsyncThunk(
   'ingredients/getIngredients', () => {
-    return getIngredientsAPI(`${BASE_URL}/ingredients`)
-      .catch (err => {
-        console.error(`Could not get ingredients: ${err}`);
-      })
+    return getIngredientsAPI(`ingredients`)
   });
 
 const initialState: IIngredientsState = {
@@ -54,11 +50,12 @@ export const ingredientsSlice = createSlice({
       state.requestSucceed = true;
       state.ingredientsRequested = false;
     })
-    builder.addCase(getIngredients.rejected, (state) => {
+    builder.addCase(getIngredients.rejected, (state, action) => {
       state.ingredientsRequested = false;
       state.requestSucceed = false;
       state.requestError = true;
       state.ingredients = initialState.ingredients;
+      console.log(`Couldn't get ingredients: ${action.error.message}`)
     })
   }
 })

@@ -9,28 +9,27 @@ function checkResponse(res: Response) {
   return Promise.reject(`Ошибка ${res.status}`);
 }
 
-function request(url: string, options?: RequestInit) {
-  return fetch(url, options).then(checkResponse)
+function request(endpoint: string, options?: RequestInit) {
+  return fetch(`${BASE_URL}${endpoint}`, options).then(checkResponse)
 }
 
-function requestWithTokenCheck(url: string, options: RequestInit, func: (url: string, data?: any) => any, data?: any) {
-  return fetch(url, options)
+function requestWithTokenCheck(endpoint: string, options: RequestInit, func: (url: string, data?: any) => any, data?: any) {
+  return fetch(`${BASE_URL}${endpoint}`, options)
     .then(res => {
       if (res.ok) {
         return res.json();
       } else if (res.status === 403)  {
-        return refreshTokenAPI(`${BASE_URL}/auth/token`)
-          .then(res => {func(url, data)})
+        return refreshTokenAPI(`auth/token`)
+          .then(res => {func(endpoint, data)})
       }})
 }
 
-
-const getIngredientsAPI = (baseUrl: string) => {
-  return request(baseUrl)
+const getIngredientsAPI = (endpoint: string) => {
+  return request(endpoint)
 }
 
-const postOrderAPI = (baseUrl: string, orderedIngredients: string[]) => {
-  return request(baseUrl, {
+const postOrderAPI = (endpoint: string, orderedIngredients: string[]) => {
+  return request(endpoint, {
     method: "POST",
     headers: {
       'Accept': 'application/json',
@@ -43,8 +42,8 @@ const postOrderAPI = (baseUrl: string, orderedIngredients: string[]) => {
   });
 }
 
-const loginAPI = (baseUrl: string, form: TLoginForm) => {
-  return request(baseUrl, {
+const loginAPI = (endpoint: string, form: TLoginForm) => {
+  return request(endpoint, {
     method: 'POST',
     mode: 'cors',
     cache: 'no-cache',
@@ -59,8 +58,8 @@ const loginAPI = (baseUrl: string, form: TLoginForm) => {
 
 }
 
-const logoutAPI = (baseUrl: string) => {
-  return request(baseUrl,{
+const logoutAPI = (endpoint: string) => {
+  return request(endpoint,{
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -69,8 +68,8 @@ const logoutAPI = (baseUrl: string) => {
   })
 }
 
-const getUserAPI = (baseUrl: string) => {
-  return requestWithTokenCheck(baseUrl, {
+const getUserAPI = (endpoint: string) => {
+  return requestWithTokenCheck(endpoint, {
     method: "GET",
     headers: {
       'Content-Type': 'application/json',
@@ -79,8 +78,8 @@ const getUserAPI = (baseUrl: string) => {
   }, getUserAPI);
 }
 
-const registerRequestAPI = (baseUrl: string, form: IPersonalInformationForm) => {
-  return request(baseUrl, {
+const registerRequestAPI = (endpoint: string, form: IPersonalInformationForm) => {
+  return request(endpoint, {
     method: 'POST',
     mode: 'cors',
     cache: 'no-cache',
@@ -94,8 +93,8 @@ const registerRequestAPI = (baseUrl: string, form: IPersonalInformationForm) => 
   })
 }
 
-const changeUserInfoAPI = (baseUrl: string, form: IPersonalInformationForm) => {
-  return requestWithTokenCheck(baseUrl, {
+const changeUserInfoAPI = (endpoint: string, form: IPersonalInformationForm) => {
+  return requestWithTokenCheck(endpoint, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -105,8 +104,8 @@ const changeUserInfoAPI = (baseUrl: string, form: IPersonalInformationForm) => {
   }, changeUserInfoAPI, form);
 }
 
-const passwordChangeRequestAPI = (baseUrl: string, email: {email: string}) => {
-  return request(baseUrl, {
+const passwordChangeRequestAPI = (endpoint: string, email: {email: string}) => {
+  return request(endpoint, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -115,8 +114,8 @@ const passwordChangeRequestAPI = (baseUrl: string, email: {email: string}) => {
   })
 }
 
-const resetPasswordAPI = (baseUrl: string, password: {password: string}) => {
-  return request(baseUrl, {
+const resetPasswordAPI = (endpoint: string, password: {password: string}) => {
+  return request(endpoint, {
     method: 'POST',
     mode: 'cors',
     cache: 'no-cache',
@@ -130,8 +129,8 @@ const resetPasswordAPI = (baseUrl: string, password: {password: string}) => {
   })
 }
 
-const refreshTokenAPI = (baseUrl: string) => {
-  return request(baseUrl, {
+const refreshTokenAPI = (endpoint: string) => {
+  return request(endpoint, {
     method: 'POST',
     mode: 'cors',
     cache: 'no-cache',

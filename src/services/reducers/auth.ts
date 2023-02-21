@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import {BASE_URL} from "../../utils/constatants";
 import {saveCookie} from "../../utils/cookies"
 import {IPersonalInformationForm, IUser, TLoginForm} from "../../utils/common-interfaces";
 import {
@@ -13,85 +12,58 @@ import {
 
 
 export const getUser = createAsyncThunk<IUser>(
-  'auth/getUser', (_, {rejectWithValue}) => {
-    return getUserAPI(`${BASE_URL}/auth/user`)
+  'auth/getUser', () => {
+    return getUserAPI(`auth/user`)
       .then (data => {
         return data.user as IUser
-      })
-      .catch (err => {
-        console.error(`Could not get user: ${err}`);
-        return rejectWithValue(err);
       })
   }
 )
 
 export const loginRequest = createAsyncThunk<IUser, TLoginForm>(
-  'auth/loginRequest', (form, {rejectWithValue}) => {
-    return loginAPI(`${BASE_URL}/auth/login`, form)
+  'auth/loginRequest', (form) => {
+    return loginAPI(`auth/login`, form)
       .then(data => {
         saveCookie(data);
         return data.user as IUser;
-      })
-      .catch (err => {
-        console.error(`Could not login: ${err}`);
-        return rejectWithValue(err);
       })
   });
 
 
 export const logout = createAsyncThunk(
-  'auth/logout', (_, {rejectWithValue}) => {
-    return logoutAPI(`${BASE_URL}/auth/logout`)
-      .catch (err => {
-        console.error(`Could not logout: ${err}`);
-        return rejectWithValue(err);
-      })
+  'auth/logout', () => {
+    return logoutAPI(`auth/logout`)
   }
 )
 
 export const registerRequest = createAsyncThunk<IUser, IPersonalInformationForm>(
-  'auth/registerRequest', (form, { rejectWithValue}) => {
-    return registerRequestAPI(`${BASE_URL}/auth/register`, form)
+  'auth/registerRequest', (form) => {
+    return registerRequestAPI(`auth/register`, form)
       .then (data => {
         saveCookie(data);
         return data.user as IUser
-      })
-      .catch (err => {
-        console.error(`Registration failed: ${err}`);
-        return rejectWithValue(err);
       })
   }
 )
 
 export const changeUserInfo = createAsyncThunk<IUser, IPersonalInformationForm>(
-  'auth/changeUserInfo', (form, {rejectWithValue}) => {
-    return changeUserInfoAPI(`${BASE_URL}/auth/user`, form)
+  'auth/changeUserInfo', (form) => {
+    return changeUserInfoAPI(`auth/user`, form)
       .then(data => {
         return data.user as IUser
-      })
-      .catch (err => {
-        console.error(`Could not change user information: ${err}`);
-        return rejectWithValue(err);
       })
   }
 )
 
 export const passwordChangeRequest = createAsyncThunk<string, {email: string}>(
-  'auth/passwordChangeRequest', (email, {rejectWithValue}) => {
-    return passwordChangeRequestAPI(`${BASE_URL}/password-reset`, email)
-      .catch (err => {
-        return rejectWithValue(`Could not request changing password: ${err}`);
-      })
+  'auth/passwordChangeRequest', (email) => {
+    return passwordChangeRequestAPI(`password-reset`, email)
   }
 )
 
 export const resetPassword = createAsyncThunk<string, {password: string}>(
-  'auth/resetPassword', (password, {rejectWithValue}) => {
-    return resetPasswordAPI(`${BASE_URL}/password-reset/reset`, password)
-      .catch (err => {
-        return rejectWithValue(`Could not change password: ${err}`);
-      })
-
+  'auth/resetPassword', (password) => {
+    return resetPasswordAPI(`password-reset/reset`, password)
   }
 )
 
@@ -180,11 +152,12 @@ export const formSlice = createSlice({
       state.userIsAuthenticated = true;
       state.requests.registration.isRequested = false;
     })
-    builder.addCase(registerRequest.rejected, (state) => {
+    builder.addCase(registerRequest.rejected, (state, action) => {
       state.requests.registration.requestSucceed = false;
       state.requests.registration.requestError = true;
       state.userInfo.email = initialState.userInfo.email;
       state.userInfo.name = initialState.userInfo.name
+      console.log(`Registration failed: ${action.error.message}`)
     })
 
     builder.addCase(loginRequest.pending, (state) => {
@@ -197,12 +170,13 @@ export const formSlice = createSlice({
       state.requests.login.isRequested = false;
       state.requests.login.requestSucceed = true;
     })
-    builder.addCase(loginRequest.rejected, (state) => {
+    builder.addCase(loginRequest.rejected, (state, action) => {
       state.requests.login.isRequested = false;
       state.requests.login.requestSucceed = false;
       state.requests.login.requestError = true;
       state.userInfo.email = initialState.userInfo.email;
       state.userInfo.name = initialState.userInfo.name
+      console.log(`Couldn't login: ${action.error.message}`)
     })
 
     builder.addCase(passwordChangeRequest.pending, (state) => {
@@ -215,10 +189,11 @@ export const formSlice = createSlice({
     builder.addCase(passwordChangeRequest.fulfilled, (state) => {
       state.requests.passwordChangeRequest.requestSucceed = true;
     })
-    builder.addCase(passwordChangeRequest.rejected, (state) => {
+    builder.addCase(passwordChangeRequest.rejected, (state, action) => {
       state.requests.passwordChangeRequest.isRequested = false;
       state.requests.passwordChangeRequest.requestSucceed = false;
       state.requests.passwordChangeRequest.requestError = true;
+      console.log(`Couldn't request for password change: ${action.error.message}`)
     })
 
     builder.addCase(resetPassword.pending, (state) => {
@@ -230,10 +205,11 @@ export const formSlice = createSlice({
       state.requests.passwordReset.isRequested = false;
       state.requests.passwordReset.requestSucceed = true;
     })
-    builder.addCase(resetPassword.rejected, (state) => {
+    builder.addCase(resetPassword.rejected, (state, action) => {
       state.requests.passwordReset.isRequested = false;
       state.requests.passwordReset.requestSucceed = false;
       state.requests.passwordReset.requestError = true;
+      console.log(`Couldn't reset password: ${action.error.message}`)
     })
 
     builder.addCase(getUser.pending, (state) => {
@@ -246,10 +222,11 @@ export const formSlice = createSlice({
       state.userInfo.email = action.payload.email;
       state.userInfo.name = action.payload.name;
     })
-    builder.addCase(getUser.rejected, (state) => {
+    builder.addCase(getUser.rejected, (state, action) => {
       state.requests.auth.requestError = true;
       state.requests.auth.isRequested = false;
       state.userIsAuthenticated = false;
+      console.log(`Couldn't get user: ${action.error.message}`);
     })
 
     builder.addCase(changeUserInfo.pending, (state) => {
@@ -260,11 +237,11 @@ export const formSlice = createSlice({
       state.requests.userInfoChange.isRequested = false;
       state.userInfo.email = action.payload.email;
       state.userInfo.name = action.payload.name;
-
     })
-    builder.addCase(changeUserInfo.rejected, (state) => {
+    builder.addCase(changeUserInfo.rejected, (state, action) => {
       state.requests.userInfoChange.requestError = true;
       state.requests.userInfoChange.isRequested = false;
+      console.log(`Couldn't change user info: ${action.error.message}`)
     })
 
     builder.addCase(logout.fulfilled, (state) => {
