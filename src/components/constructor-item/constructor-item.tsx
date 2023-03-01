@@ -3,7 +3,7 @@ import { ConstructorElement, DragIcon } from '@ya.praktikum/react-developer-burg
 import { isBun } from "../../utils/constatants";
 import type { XYCoord } from 'dnd-core'
 import {useDrag, useDrop} from "react-dnd";
-import {useDispatch} from "react-redux";
+import {useAppDispatch} from "../../utils/hooks";
 import {moveIngredient, TConstructorIngredient} from "../../services/reducers/burger-constructor";
 
 interface IConstructorItemProp {
@@ -22,7 +22,7 @@ interface DragItem {
 
 const ConstructorItem:FC<IConstructorItemProp> = ({item, style, type, deleteItem, index}) => {
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const ref = useRef<HTMLLIElement>(null);
 
   let name = item.name;

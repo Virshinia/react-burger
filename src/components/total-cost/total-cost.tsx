@@ -1,5 +1,6 @@
 import React, {useState, useEffect, FC} from 'react';
 import {useAppDispatch, useAppSelector} from "../../utils/hooks";
+import { useNavigate }  from 'react-router-dom';
 import { CurrencyIcon, Button} from '@ya.praktikum/react-developer-burger-ui-components'
 import Modal from "../modal/modal";
 import OrderDetails from "../order-details/order-details";
@@ -17,7 +18,7 @@ interface ITotalCostProps {
 
 const TotalCost: FC<ITotalCostProps> = ({others, bun}) => {
   const dispatch = useAppDispatch();
-  //const checkError = (store) => store.burgerConstructor.postOrderError;
+  const navigate = useNavigate();
 
   const error = useAppSelector((store) => store.burgerConstructor.postOrderError);
   const userIsAuthenticated = useAppSelector(checkUser);
@@ -43,8 +44,12 @@ const TotalCost: FC<ITotalCostProps> = ({others, bun}) => {
   }
 
   const handlePostOrder = () => {
-    dispatch(postOrder(ingredientsForOrder));
-    setVisibility(!modalIsVisible);
+    if (userIsAuthenticated) {
+      dispatch(postOrder(ingredientsForOrder));
+      setVisibility(!modalIsVisible);
+    } else {
+     navigate('/login')
+    }
   }
 
   const handleModalContent = () => {
@@ -73,7 +78,7 @@ const TotalCost: FC<ITotalCostProps> = ({others, bun}) => {
         type="primary"
         size="medium"
         onClick={handlePostOrder}
-        disabled={!userIsAuthenticated}>
+      >
         Оформить заказ
       </Button>
       {modalIsVisible && modalForOrderDetails}
