@@ -1,23 +1,23 @@
 .ingredient {
-    display: flex;
-    flex-flow: column;
-    position: relative;
-    text-align: center;
-    gap: 8px;
-    max-width: 272px;
-    transition: ease-out .4s;
+  display: flex;
+  flex-flow: column;
+  position: relative;
+  text-align: center;
+  gap: 8px;
+  max-width: 272px;
+  transition: ease-out .4s;
 }
 
 .ingredient:hover {
-    cursor: pointer;
-    transform: scale(102%);
+  cursor: pointer;
+  transform: scale(102%);
 }
 
 .ingredientImage {
-    margin: 0 16px;
+  margin: 0 16px;
 }
 .price {
-    display: flex;
-    gap: 9px;
-    justify-content: center;
+  display: flex;
+  gap: 9px;
+  justify-content: center;
 }
